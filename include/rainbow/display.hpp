@@ -7,16 +7,22 @@
 
 namespace rb {
 
+class Renderer;
+
 class Display {
 public:
     Display(const char* display_name);
+    ~Display();
     bool resolution(int width, int height);
     void run();
+    void run_forever();
+    void test();
 public:
     const char* display_name;
     char driver_name[64];
     SDL_Surface* screen;
     CGLContextObj context;
+    Renderer* renderer;
 };
 
 }
