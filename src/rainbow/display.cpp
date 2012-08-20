@@ -7,68 +7,65 @@ using namespace std;
 
 Display::~Display()
 {
+    SDL_GL_DeleteContext(context);
+    SDL_DestroyWindow(screen);
     delete renderer;
 }
 
 Display::Display(const char* display_name)
         : display_name(display_name)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) 
-        throw SDL_GetError();
-
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    screen = SDL_SetVideoMode(640, 480, 32, SDL_OPENGL);
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+        throw SDL_GetError();
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                    640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (!screen)
         throw "Failed to set video mode";
 
-    context = CGLGetCurrentContext();
+    context = SDL_GL_CreateContext(screen);
+
+    // vsync
+    SDL_GL_SetSwapInterval(1);
+
+    glewExperimental = GL_TRUE;
+    GLenum glew_status = glewInit();
+    if (glew_status != GLEW_OK) 
+        cerr << glewGetErrorString(glew_status) << endl;
     renderer = new Renderer(this);
-    SDL_SetGamma(1.0f, 1.0f, 1.0f);
 }
 
 bool Display::resolution(int width, int height)
 {
-    screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                    width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    if (!screen)
+        throw "Failed to set video mode";
+    context = SDL_GL_CreateContext(screen);
     return true;
 }
 
 void Display::run()
 {
+    renderer->run_frame();
+}
+
+void Display::clear()
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    test();
-    SDL_GL_SwapBuffers();
 }
 
-void Display::run_forever()
+void Display::end_frame()
 {
-    while (true) {
-        run();
-    }
-}
-
-void Display::test()
-{
-    Surface_triangles tris;
-    tris.verts = new Surface_vertex[4];
-    tris.indexes = new int[4];
-    tris.num_indexes = 4;
-    tris.num_verts = 4;
-
-    tris.verts[0] = (Surface_vertex){{0, 0}, (float [3]) {0, 0, 0}};
-
-    tris.indexes[0] = 0;
-    tris.verts[1].xyz = (float [3]) {-1, 0, 0};
-    tris.indexes[1] = 1;
-    tris.verts[2].xyz = (float [3]) {1, 1, 0};
-    tris.indexes[2] = 2;
-    tris.verts[3].xyz = (float [3]){0, -1, 0};
-    tris.indexes[3] = 3;
-
-    renderer->draw_elements_immediate(&tris);
-
-    delete[] tris.verts;
-    delete[] tris.indexes;
+    SDL_GL_SwapWindow(screen);
 }

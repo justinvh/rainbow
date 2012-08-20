@@ -1,9 +1,7 @@
 #ifndef RAINBOW_DISPLAY_HPP
 #define RAINBOW_DISPLAY_HPP
 
-#include <SDL.h>
-#include <OpenGL/OpenGL.h>
-#include <SDL_opengl.h>
+#include <rainbow/gl.h>
 
 namespace rb {
 
@@ -15,13 +13,13 @@ public:
     ~Display();
     bool resolution(int width, int height);
     void run();
-    void run_forever();
-    void test();
+    void clear();
+    void end_frame();
 public:
     const char* display_name;
     char driver_name[64];
-    SDL_Surface* screen;
-    CGLContextObj context;
+    SDL_Window* screen;
+    SDL_GLContext context;
     Renderer* renderer;
 };
 

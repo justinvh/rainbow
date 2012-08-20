@@ -1,4 +1,5 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_input.h>
 #include <rainbow/input.hpp>
 
 using namespace rb;
@@ -6,8 +7,6 @@ using namespace rb;
 Input::Input()
 {
     show_cursor();
-    SDL_EnableUNICODE(1);
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
     flush_events();
 }
 
@@ -18,19 +17,17 @@ void Input::bind(int event, const Event_function& callback)
 
 void Input::grab_cursor()
 {
-    SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
 void Input::release_cursor()
 {
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
 void Input::flush_events()
 {
     SDL_Event dummy[1];
-    while (SDL_PeepEvents(dummy, 1, SDL_GETEVENT, 
-                          SDL_EVENTMASK(SDL_MOUSEMOTION)));
+    while (SDL_PeepEvents(dummy, 1, SDL_PEEKEVENT,
+                SDL_USEREVENT, 1));
 }
 
 void Input::show_cursor()
@@ -66,8 +63,6 @@ void Input::run()
             case SDL_MOUSEBUTTONUP:
                 break;
             case SDL_QUIT:
-            case SDL_VIDEORESIZE:
-            case SDL_ACTIVEEVENT:
                 break;
             default:
                 break;
