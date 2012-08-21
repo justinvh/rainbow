@@ -14,18 +14,6 @@ namespace rb {
 class Display;
 class Renderer;
 
-struct Surface_vertex {
-    float st[2];
-    float* xyz;
-};
-
-struct Surface_triangles {
-    Surface_vertex* verts;
-    int* indexes;
-    int num_indexes;
-    int num_verts;
-};
-
 typedef std::map<std::string, bool> GL_extensions;
 struct GL_info {
     std::string driver_name;
@@ -49,7 +37,6 @@ class Renderer {
 public:
     Renderer() = default;
     Renderer(Display* display);
-    void draw_elements_immediate(const Surface_triangles* triangles);
     void run_frame();
     GLuint add_static_vertices(float* vertices, uint32_t vlength,
                                int* elements, uint32_t elength);
