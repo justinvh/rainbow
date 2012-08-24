@@ -18,7 +18,10 @@ set(sources "src/rainbow/main.cpp"
             "src/rainbow/input.cpp"
             "src/rainbow/shader.cpp"
             "src/rainbow/file.cpp"
-            "src/rainbow/renderer.cpp")
+            "src/rainbow/renderer.cpp"
+            "src/rainbow/map/map.cpp"
+            "src/rainbow/model/model.cpp"
+            "src/rainbow/model/obj.cpp")
 
 include_directories("include")
 include_directories(${SDL2_INCLUDE_DIR})

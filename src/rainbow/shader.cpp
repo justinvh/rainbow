@@ -210,7 +210,6 @@ Uniform::Uniform(GLuint glprogram, const std::string& name)
     : name(name), glprogram(glprogram)
 {
     uniform = glGetUniformLocation(glprogram, name.c_str());
-    std::cout << name << ": " << uniform << std::endl;
 }
 
 void Uniform::mat4(glm::mat4 matrix)

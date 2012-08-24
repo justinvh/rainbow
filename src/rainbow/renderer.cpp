@@ -55,12 +55,12 @@ Renderer::Renderer(Display* display)
 
     // Create a mappable extensions array for quickly querying
     const GLubyte* extensions = glGetString(GL_EXTENSIONS);
+    cout << "Extensions : ";
     if (extensions == nullptr) {
-        cerr << "No extensions mapped: " << glGetError() << endl;
+        cerr << "None" << endl;
     } else {
         std::stringstream iss((const char*)extensions);
         std::string extension;
-        cout << "Extensions : ";
         for (int i = 1; iss >> extension; i++) {
             if (i % 3 == 0)  
                 cout << "\n             ";

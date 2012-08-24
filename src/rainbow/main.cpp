@@ -1,6 +1,5 @@
 #include <iostream>
 #include <thread>
-#include <rainbow/gl.h>
 #include <rainbow/rainbow.hpp>
 
 using namespace rb;
@@ -14,6 +13,11 @@ struct Shader_entry {
 
 int main(int argc, char** argv)
 {
+    if (argc < 2) {
+        std::cerr << argv[0] << " <map>" << std::endl;
+        return 2;
+    }
+
     bool quit = false;
 
     // Initialize the display
@@ -42,8 +46,11 @@ int main(int argc, char** argv)
         e.shader = shader;
     }
 
-    // Draw a test square
-    renderer.tests.color_square();
+    Map test_map(argv[1]);
+    renderer.add_static_vertices(test_map.verts.get(), 
+                                 test_map.vert_size,
+                                 test_map.elements.get(), 
+                                 test_map.element_size);
 
     // render a test square with the 
     Shader* barebones = shaders[0].shader;
