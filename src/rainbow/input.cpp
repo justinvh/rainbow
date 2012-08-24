@@ -10,9 +10,10 @@ Input::Input()
     flush_events();
 }
 
-void Input::bind(int event, const Event_function& callback)
+Input& Input::bind(int event, const Event_function& callback)
 {
     event_callbacks[event].push_back(callback);
+    return *this;
 }
 
 void Input::grab_cursor()

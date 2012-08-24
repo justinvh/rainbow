@@ -20,7 +20,7 @@ public:
     void show_cursor();
     void hide_cursor();
     void run();
-    void bind(int event, const Event_function& function);
+    Input& bind(int event, const Event_function& function);
 public:
     Event_map event_callbacks;
 };

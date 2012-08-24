@@ -4,6 +4,7 @@
 
 using rb::Shader;
 using rb::Attribute;
+using rb::Uniform;
 
 Shader::Shader(const std::string& name,
                const std::string& vertex_file, 
@@ -171,6 +172,12 @@ Attribute Shader::attrib(const std::string& attribute)
     return Attribute(glprogram, attribute);
 }
 
+Uniform Shader::uniform(const std::string& uniform)
+{
+    return Uniform(glprogram, uniform);
+}
+
+
 Attribute::Attribute(GLuint glprogram, const std::string& name)
     : name(name), glprogram(glprogram)
 {
@@ -189,12 +196,24 @@ void Attribute::eso(int elements, int stride, int offset, int size_of,
                           (void*)(offset * size_of));
 }
 
-void Attribute::v2d(int stride, int offset, int size_of, bool normalize)
+void Attribute::vec2(int stride, int offset, int size_of, bool normalize)
 {
     return eso(2, stride, offset, size_of, normalize);
 }
 
-void Attribute::v3d(int stride, int offset, int size_of, bool normalize)
+void Attribute::vec3(int stride, int offset, int size_of, bool normalize)
 {
     return eso(3, stride, offset, size_of, normalize);
+}
+
+Uniform::Uniform(GLuint glprogram, const std::string& name)
+    : name(name), glprogram(glprogram)
+{
+    uniform = glGetUniformLocation(glprogram, name.c_str());
+    std::cout << name << ": " << uniform << std::endl;
+}
+
+void Uniform::mat4(glm::mat4 matrix)
+{
+    glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(matrix));
 }

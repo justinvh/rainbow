@@ -144,7 +144,7 @@ void Renderer_tests::color_square()
 
     int elements[] = {
         0, 1, 2,
-        2, 3, 0
+        1, 3, 0
     };
     
     renderer->add_static_vertices(vertices, sizeof(vertices), 

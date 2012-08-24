@@ -43,14 +43,25 @@ public:
     Attribute(GLuint glprogram, const std::string& name);
     void eso(int elements, int stride, int offset, 
              int size_of = sizeof(float), bool normalize = false);
-    void v2d(int stride, int offset, 
+    void vec2(int stride, int offset, 
              int size_of = sizeof(float), bool normalize = false);
-    void v3d(int stride, int offset, 
+    void vec3(int stride, int offset, 
              int size_of = sizeof(float), bool normalize = false);
 public:
     std::string name;
     GLuint glprogram;
     GLint attribute;
+};
+
+class Uniform {
+public:
+    Uniform() = default;
+    Uniform(GLuint glprogram, const std::string& name);
+    void mat4(glm::mat4 matrix);
+public:
+    std::string name;
+    GLuint glprogram;
+    GLint uniform;
 };
 
 class Shader {
@@ -71,6 +82,7 @@ public:
     bool use();
     bool program_initialized();
     Attribute attrib(const std::string& attribute);
+    Uniform uniform(const std::string& uniform);
 public:
     GLuint vertex_shader;
     GLuint fragment_shader;

@@ -47,9 +47,23 @@ int main(int argc, char** argv)
 
     // render a test square with the 
     Shader* barebones = shaders[0].shader;
-    barebones->attrib("position").v2d(5, 0);
-    barebones->attrib("color").v3d(5, 2);
+    barebones->attrib("position").vec2(5, 0);
+    barebones->attrib("color").vec3(5, 2);
     barebones->use();
+
+    glm::mat4 trans;
+    trans = glm::rotate(trans, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    Uniform utrans = barebones->uniform("trans");
+    Uniform umodel = barebones->uniform("model");
+    Uniform uview = barebones->uniform("model");
+    Uniform uproj = barebones->uniform("proj");
+
+    int rotation = 0;
+    input.bind('w', [&rotation](int event) { 
+        rotation = (rotation + 1) % 180;
+    }).bind('s', [&rotation](int event) {
+        rotation = (rotation - 1) % 180;
+    });
 
     // Run the actual engine
     do {
@@ -57,6 +71,9 @@ int main(int argc, char** argv)
         display.clear();
         display.run();
         display.end_frame();
+        trans = glm::rotate(trans, float(rotation), 
+                            glm::vec3(0.0f, 0.0f, 1.0f));
+        utrans.mat4(trans);
     } while(!quit);
 
     return 0;
