@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(rainbow)
 
+add_subdirectory(testing/gtest)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${rainbow_SOURCE_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
@@ -24,6 +26,7 @@ set(sources "src/rainbow/main.cpp"
             "src/rainbow/model/obj.cpp")
 
 include_directories("include")
+include_directories("testing/gtest/include")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
@@ -33,4 +36,5 @@ add_executable(rainbow ${sources})
 target_link_libraries(rainbow 
                       ${SDL2_LIBRARY} 
                       ${OPENGL_LIBRARIES} 
-                      ${GLEW_LIBRARY})
+                      ${GLEW_LIBRARY}
+                      gtest)
