@@ -28,6 +28,13 @@ Renderer::Renderer(Display* display)
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
+    /*
+    int stride = 11 * sizeof(float);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glVertexPointer(3, GL_FLOAT, stride, BUFFER_OFFSET(0));
+    glNormalPointer(GL_FLOAT, stride, BUFFER_OFFSET(6));
+    */
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glDepthMask(GL_TRUE);
 
@@ -76,9 +83,9 @@ void Renderer::run_frame()
     glDrawElements(GL_TRIANGLES, total_elements, GL_UNSIGNED_INT, 0);
 }
 
-GLuint Renderer::add_static_vertices(float* vertices, 
+GLuint Renderer::add_static_vertices(const float* vertices, 
                                      uint32_t vlength,
-                                     int* elements,
+                                     const int* elements,
                                      uint32_t elength)
 {
     GLuint vao;

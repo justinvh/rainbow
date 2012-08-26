@@ -38,8 +38,8 @@ public:
     Renderer() = default;
     Renderer(Display* display);
     void run_frame();
-    GLuint add_static_vertices(float* vertices, uint32_t vlength,
-                               int* elements, uint32_t elength);
+    GLuint add_static_vertices(const float* vertices, uint32_t vlength,
+                               const int* elements, uint32_t elength);
     GLuint add_dynamic_vertices(float* vertices, uint32_t length);
     GLuint add_stream_vertices(float* vertices, uint32_t length);
     int add_shader(const std::string& name,
