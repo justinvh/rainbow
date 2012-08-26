@@ -3,9 +3,9 @@
 
 #include <memory>
 #include <string>
+#include <cstdint>
 
 namespace rb {
-
 
 enum class Model_format {
     OBJ,
@@ -18,10 +18,10 @@ public:
     virtual const float* verts() = 0;
     virtual const float* uv() = 0;
     virtual const int* elements() = 0;
-    virtual int vert_size() = 0;
-    virtual int vert_count() = 0;
-    virtual int element_size() = 0;
-    virtual int element_count() = 0;
+    virtual uint32_t vert_size() = 0;
+    virtual uint32_t vert_count() = 0;
+    virtual uint32_t element_size() = 0;
+    virtual uint32_t element_count() = 0;
     virtual Model_format format() = 0;
 };
 

@@ -7,6 +7,7 @@
 #include <rainbow/renderer.hpp>
 #include <rainbow/input.hpp>
 #include <rainbow/map.hpp>
+#include <rainbow/model.hpp>
 #include <rainbow/gl.h>
 
 #endif // RAINBOW_RAINBOW_HPP

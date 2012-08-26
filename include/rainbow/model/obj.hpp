@@ -18,10 +18,10 @@ public:
     virtual const float* verts();
     virtual const float* uv();
     virtual const int* elements();
-    virtual int vert_size();
-    virtual int vert_count();
-    virtual int element_size();
-    virtual int element_count();
+    virtual uint32_t vert_size();
+    virtual uint32_t vert_count();
+    virtual uint32_t element_size();
+    virtual uint32_t element_count();
     virtual Model_format format();
 public:
     bool valid;
@@ -29,6 +29,8 @@ public:
     int data_vert_count;
     int data_element_size;
     int data_element_count;
+    int vert_position;
+    int element_position;
     std::unique_ptr<float> data_verts;
     std::unique_ptr<float> data_uv;
     std::unique_ptr<int> data_elements;
