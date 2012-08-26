@@ -15,15 +15,18 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
 # Warning pedantic flags for all
 set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic ${CMAKE_CXX_FLAGS}")
 
-set(sources "src/rainbow/main.cpp"
-            "src/rainbow/display.cpp"
+set(sources "src/rainbow/display.cpp"
             "src/rainbow/input.cpp"
             "src/rainbow/shader.cpp"
             "src/rainbow/file.cpp"
             "src/rainbow/renderer.cpp"
             "src/rainbow/map/map.cpp"
             "src/rainbow/model/model.cpp"
-            "src/rainbow/model/obj.cpp")
+            "src/rainbow/model/obj.cpp"
+            "src/rainbow/math/random.cpp")
+
+set(rr_sources "src/rainbow/main.cpp")
+set(test_model_obj_sources "testing/rainbow/model/obj.cpp")
 
 include_directories("include")
 include_directories("testing/gtest/include")
@@ -32,9 +35,13 @@ include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
 
-add_executable(rainbow ${sources})
+add_library(rainbow ${sources})
+add_executable(rr ${rr_sources})
+add_executable(test_model_obj ${test_model_obj_sources})
 target_link_libraries(rainbow 
                       ${SDL2_LIBRARY} 
                       ${OPENGL_LIBRARIES} 
                       ${GLEW_LIBRARY}
                       gtest)
+target_link_libraries(rr rainbow)
+target_link_libraries(test_model_obj rainbow)

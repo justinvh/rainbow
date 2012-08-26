@@ -1,6 +1,7 @@
 #include <iostream>
 #include <rainbow/renderer.hpp>
 #include <rainbow/display.hpp>
+#include <rainbow/math/random.hpp>
 
 using namespace rb;
 using namespace std;
@@ -15,6 +16,8 @@ Display::~Display()
 Display::Display(const char* display_name)
         : display_name(display_name)
 {
+    random_seed();
+
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -36,7 +39,7 @@ Display::Display(const char* display_name)
     context = SDL_GL_CreateContext(screen);
 
     // vsync
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     GLenum glew_status = glewInit();
@@ -47,8 +50,12 @@ Display::Display(const char* display_name)
 
 bool Display::resolution(int width, int height)
 {
-    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                    width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    SDL_GL_DeleteContext(context);
+    SDL_DestroyWindow(screen);
+
+    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, 
+                              SDL_WINDOWPOS_CENTERED,
+                              width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (!screen)
         throw "Failed to set video mode";
     context = SDL_GL_CreateContext(screen);
