@@ -68,21 +68,21 @@ int main(int argc, char** argv)
     glm::mat4 view = glm::lookAt(glm::vec3( 1.2f, 1.2f, 1.2f ),
                                  glm::vec3( 0.0f, 0.0f, 0.0f ),
                                  glm::vec3( 0.0f, 0.0f, 1.0f ));
-    glm::mat4 proj = glm::perspective( 45.0f, 800.0f / 600.0f, 1.0f, 10.0f );
+    glm::mat4 proj = glm::perspective( 20.0f, 480.0f / 640.0f, 0.1f, 100.0f );
 
     Uniform umodel = barebones->uniform("model");
     Uniform uview = barebones->uniform("view");
     Uniform uproj = barebones->uniform("proj");
 
+    umodel.mat4(model);
     uview.mat4(view);
     uproj.mat4(proj);
     
-    int rotation = 0;
-    input.bind('w', [&rotation](int event) { 
-        rotation = (rotation + 1) % 180;
-    }).bind('s', [&rotation](int event) {
-        rotation = (rotation - 1) % 180;
-    });
+    float forward = 0, sides = 0, rotation = 1;
+    input.bind('w', [&forward](int event) { forward += 0.05; })
+         .bind('s', [&forward](int event) { forward -= 0.05; })
+         .bind('a', [&sides](int event) { sides += 0.05; })
+         .bind('d', [&sides](int event) { sides -= 0.05; });
 
     // Run the actual engine
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
@@ -91,13 +91,15 @@ int main(int argc, char** argv)
     do {
         input.run();
         display.clear();
-        display.run();
-        display.end_frame();
-        model = glm::rotate(model, float(rotation), 
-                            glm::vec3(0.0f, 0.5f, 1.0f));
-
+        model = glm::rotate(model, rotation, glm::vec3(0.7f, 0.5f, 0.3f));
+        view = glm::translate(view, glm::vec3(forward, sides, 0.0f));
+        uview.mat4(view);
         umodel.mat4(model);
         frame++;
+        forward = 0;
+        sides = 0;
+        display.run();
+        display.end_frame();
     } while(!quit);
     end = std::chrono::high_resolution_clock::now();
     double frame_time = std::chrono::duration_cast<std::chrono::seconds> (end - start).count();

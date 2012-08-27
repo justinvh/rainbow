@@ -37,6 +37,7 @@ class Renderer {
 public:
     Renderer() = default;
     Renderer(Display* display);
+    void init();
     void run_frame();
     GLuint add_static_vertices(const float* vertices, uint32_t vlength,
                                const int* elements, uint32_t elength);

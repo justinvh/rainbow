@@ -15,37 +15,22 @@ Renderer::Renderer(Display* display)
     total_elements = 0;
     total_vertices = 0;
     tests.renderer = this;
+}
 
-    glClearDepth(1.0f);
-    glCullFace(GL_FRONT_AND_BACK);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-    glEnable(GL_TEXTURE_2D);
-    glShadeModel(GL_SMOOTH);
-    glDepthFunc(GL_LEQUAL);
-
+void Renderer::init()
+{
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
-    /*
-    int stride = 11 * sizeof(float);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glVertexPointer(3, GL_FLOAT, stride, BUFFER_OFFSET(0));
-    glNormalPointer(GL_FLOAT, stride, BUFFER_OFFSET(6));
-    */
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
+    glClearDepth(1.0f);
+    glDepthFunc(GL_LEQUAL);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glDepthMask(GL_TRUE);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_SCISSOR_TEST);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-
-    glDisable(GL_LIGHTING);
-
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Store our GL context information
     info.driver_name = SDL_GetCurrentVideoDriver();
@@ -80,7 +65,8 @@ Renderer::Renderer(Display* display)
 
 void Renderer::run_frame()
 {
-    glDrawElements(GL_TRIANGLES, total_elements, GL_UNSIGNED_INT, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDrawElements(GL_TRIANGLES, total_elements, GL_UNSIGNED_INT, nullptr);
 }
 
 GLuint Renderer::add_static_vertices(const float* vertices, 
