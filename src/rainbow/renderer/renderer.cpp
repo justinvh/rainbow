@@ -5,7 +5,6 @@
 
 #include <rainbow/display.hpp>
 #include <rainbow/renderer.hpp>
-#include <rainbow/shader.hpp>
 
 using namespace rb;
 using namespace std;

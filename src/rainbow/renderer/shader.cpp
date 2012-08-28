@@ -1,4 +1,4 @@
-#include <rainbow/shader.hpp>
+#include <rainbow/renderer/shader.hpp>
 #include <rainbow/file.hpp>
 #include <iostream>
 

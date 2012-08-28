@@ -1,5 +1,5 @@
-#ifndef RAINBOW_SHADER_HPP
-#define RAINBOW_SHADER_HPP
+#ifndef RAINBOW_RENDERER_SHADER_HPP
+#define RAINBOW_RENDERER_SHADER_HPP
 
 #include <sstream>
 #include <exception>
@@ -94,4 +94,4 @@ public:
 
 }
 
-#endif // RAINBOW_SHADER_HPP
+#endif // RAINBOW_RENDERER_SHADER_HPP

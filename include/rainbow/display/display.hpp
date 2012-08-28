@@ -14,7 +14,6 @@ typedef std::chrono::duration_cast<std::chrono::seconds> Timer_diff;
 #define Timer std::chrono::high_resolution_clock
 #define Timer_diff std::chrono::duration_cast<std::chrono::milliseconds>
 
-
 namespace rb {
 
 struct Timing {
