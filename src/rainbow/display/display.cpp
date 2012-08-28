@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <rainbow/gl.h>
 #include <rainbow/renderer.hpp>
 #include <rainbow/display.hpp>
@@ -15,8 +16,9 @@ Display::~Display()
 }
 
 Display::Display(const char* display_name)
-        : display_name(display_name)
+        : display_name(display_name), grab_mouse(false)
 {
+    timing.timer = Timer::now();
     screen = nullptr;
     random_seed();
 
@@ -36,6 +38,9 @@ bool Display::resolution(int width, int height)
     screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                     640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
+    screen_center_x = width / 2;
+    screen_center_y = height / 2;
+
     if (!screen)
         return false;
 
@@ -54,7 +59,7 @@ bool Display::resolution(int width, int height)
     context = SDL_GL_CreateContext(screen);
 
     // vsync
-    //SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
 
     glewExperimental = GL_TRUE;
     GLenum glew_status = glewInit();
@@ -67,6 +72,14 @@ bool Display::resolution(int width, int height)
 
 void Display::run()
 {
+    Time_point dt = Timer::now();
+    timing.fps = 1.0f / Timer_diff(dt - timing.timer).count() * 1000.0f;
+    timing.timer = dt;
+    if (grab_mouse) {
+        SDL_ShowCursor(0);
+    } else {
+        SDL_ShowCursor(1);
+    }
     renderer->run_frame();
 }
 

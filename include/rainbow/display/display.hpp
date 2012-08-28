@@ -2,8 +2,25 @@
 #define RAINBOW_DISPLAY_DISPLAY_HPP
 
 #include <rainbow/gl.h>
+#include <chrono>
+
+/* Bug in current libc++11 that prevents typedef'ng
+typedef std::chrono::time_point<std::chrono::high_resolution_clock> Time_point;
+typedef std::chrono::high_resolution_clock Timer;
+typedef std::chrono::duration_cast<std::chrono::seconds> Timer_diff;
+*/
+
+#define Time_point std::chrono::time_point<std::chrono::high_resolution_clock> 
+#define Timer std::chrono::high_resolution_clock
+#define Timer_diff std::chrono::duration_cast<std::chrono::milliseconds>
+
 
 namespace rb {
+
+struct Timing {
+    Time_point timer;
+    float fps;
+};
 
 class Renderer;
 
@@ -21,6 +38,10 @@ public:
     SDL_Window* screen;
     SDL_GLContext context;
     Renderer* renderer;
+    Timing timing;
+    bool grab_mouse;
+    int screen_center_x;
+    int screen_center_y;
 };
 
 }

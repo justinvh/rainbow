@@ -1,11 +1,19 @@
+#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_input.h>
+#include <rainbow/display.hpp>
 #include <rainbow/input.hpp>
 
 using namespace rb;
 
-Input::Input()
+Input::Input(const Display& display)
+    : display(display), timing(display.timing)
 {
+    mouse.x = 0;
+    mouse.y = 0;
+    mouse.theta = 0.0f;
+    mouse.phi = 0.0f;
+    mouse.speed = 0.0005f;
     show_cursor();
     flush_events();
 }
@@ -59,14 +67,23 @@ void Input::run()
                 }
                 break;
             }
-            case SDL_MOUSEMOTION:
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
-                break;
             case SDL_QUIT:
                 break;
             default:
                 break;
         }
     }
+
+    mouse.b = SDL_GetRelativeMouseState(&mouse.x, &mouse.y);
+    if (abs(mouse.x) > 0 || abs(mouse.y) > 0)  {
+        if (abs(mouse.x) > 100 || abs(mouse.y) > 100) {
+            mouse.x = 0;
+            mouse.y = 0;
+        }
+        mouse.theta += mouse.speed * timing.fps * mouse.x;
+        mouse.phi += mouse.speed * timing.fps * mouse.y;
+
+    }
+
+    std::cout << "Frame: " << timing.fps << "\n";
 }

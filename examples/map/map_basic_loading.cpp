@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     display.resolution(640, 480);
 
     // Handle our input binding in its base form
-    Input input;
+    Input input(display);
     input.bind('q', [&quit](int event) { quit = true; });
 
     // Handle some basic shader tests
