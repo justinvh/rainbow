@@ -12,27 +12,53 @@
 
 namespace rb {
 
-typedef float Glyph[8];
-typedef std::vector<Glyph> Glyph_vector;
+struct Glyph {
+    int id;
+    FT_Glyph_Metrics metrics;
+    FT_Vector advance;
+    float data[8];
+};
+
+typedef std::vector<const Glyph*> Glyph_vector;
 typedef std::map<uint32_t, Glyph> Char_glyph_map;
 typedef std::map<uint32_t, Char_glyph_map> Size_glyph_map;
 
 struct FT {
-    FT_Library ft_library;
-    GLuint texture_id;
-    GLint texture_pen[2];
-    GLint texture_row;
-    GLint texture_size[2];
+    FT() = default;
+    ~FT() 
+    {
+        if (library) {
+            FT_Done_FreeType(library);
+            glDeleteTextures(1, &texture.id);
+        }
+    }
+
+    FT_Library library;
+
+    struct Pen {
+        GLint x;
+        GLint y;
+    } pen;
+
+    struct Texture {
+        GLuint id;
+        GLint rows;
+        GLint width;
+        GLint height;
+    } texture;
+
     struct Context {
         GLuint maximum_texture_size;
-    };
+    } context;
 };
 
 class Font {
 public:
     // Most common operatons
+    ~Font();
     Font() = default;
     Font(const std::string& filename, uint32_t index);
+    bool valid();
     bool load(const std::string& filename, uint32_t index);
     float size(uint32_t font_size);
     const Glyph* get(uint32_t font_size, char character);
@@ -48,6 +74,9 @@ public:
 public:
     Size_glyph_map glyphs;
     FT* ft;
+    FT_Face ft_face;
+    float ft_size;
+    bool valid_font;
 };
 
 }
