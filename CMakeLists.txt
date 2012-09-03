@@ -11,6 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${rainbow_SOURCE_DIR}/cmake")
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(Python REQUIRED)
 find_package(GLM REQUIRED)
 find_package(Freetype REQUIRED)
 
@@ -24,6 +25,7 @@ include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
+include_directories(${PYTHON_INCLUDE_DIR})
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Build the examples 
@@ -54,4 +56,5 @@ target_link_libraries(rainbow
                       ${SDL2_LIBRARY} 
                       ${OPENGL_LIBRARIES} 
                       ${GLEW_LIBRARY}
+                      ${PYTHON_LIBRARY}
                       ${FREETYPE_LIBRARIES})
