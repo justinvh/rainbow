@@ -3,6 +3,8 @@ exec_program(python3.3-config
     ARGS --includes 
     OUTPUT_VARIABLE PYTHON_INCLUDE_DIR)
 
+STRING(REPLACE "-I" ";"  PYTHON_INCLUDE_DIR "${PYTHON_INCLUDE_DIR}")
+
 exec_program(python3.3-config 
     ARGS --ldflags
     OUTPUT_VARIABLE PYTHON_LIBRARY)

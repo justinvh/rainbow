@@ -7,6 +7,8 @@ option(rainbow_tests "Run the Rainbow tests." OFF)
 # CMAKE extensions
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${rainbow_SOURCE_DIR}/cmake")
 
+set(PythonLibs_FIND_VERSION 3.3)
+
 # Required packages
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
@@ -19,6 +21,8 @@ find_package(Freetype REQUIRED)
 set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic ${CMAKE_CXX_FLAGS}")
 
+message(STATUS ${PYTHON_INCLUDE_DIRS})
+
 # Dependencies and include locations
 include_directories("include")
 include_directories(${SDL2_INCLUDE_DIR})
@@ -27,16 +31,6 @@ include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
 include_directories(${PYTHON_INCLUDE_DIR})
 include_directories(${FREETYPE_INCLUDE_DIRS})
-
-# Build the examples 
-if(${rainbow_examples})
-    add_subdirectory(examples)
-endif()
-
-# Build the tests
-if(${rainbow_tests})
-    add_subdirectory(testing)
-endif()
 
 # Rainbow Sources
 set(sources "src/rainbow/display/display.cpp"
@@ -48,7 +42,9 @@ set(sources "src/rainbow/display/display.cpp"
             "src/rainbow/map/map.cpp"
             "src/rainbow/model/model.cpp"
             "src/rainbow/model/obj.cpp"
-            "src/rainbow/math/random.cpp")
+            "src/rainbow/math/random.cpp"
+            "src/rainbow/python.cpp"
+)
 
 # Construct the actual engine library
 add_library(rainbow ${sources})
@@ -58,3 +54,15 @@ target_link_libraries(rainbow
                       ${GLEW_LIBRARY}
                       ${PYTHON_LIBRARY}
                       ${FREETYPE_LIBRARIES})
+                  
+# Build the examples 
+if(${rainbow_examples})
+    add_subdirectory(examples)
+endif()
+
+# Build the tests
+if(${rainbow_tests})
+    add_subdirectory(testing)
+endif()
+
+
