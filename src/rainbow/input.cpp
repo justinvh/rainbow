@@ -84,6 +84,4 @@ void Input::run()
         mouse.phi += mouse.speed * timing.fps * mouse.y;
 
     }
-
-    std::cout << "Frame: " << timing.fps << "\n";
 }

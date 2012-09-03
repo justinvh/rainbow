@@ -14,6 +14,7 @@ namespace {
 
 bool expand_texture(FT* ft)
 {
+    glGetError();
     if (ft->texture.width == 0 || ft->texture.height == 0) {
         int width = ft->context.maximum_texture_size;
         int height = 128;
@@ -25,7 +26,7 @@ bool expand_texture(FT* ft)
         auto data = unique_ptr<GLubyte>(new GLubyte[allocation]);
         memset(data.get(), 0, sizeof(GLubyte) * allocation);
 
-        glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R8, 
+        glTexImage2D(GL_TEXTURE, 0, GL_R8, 
                 width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data.get());
 
         if (glGetError()) {
@@ -33,9 +34,9 @@ bool expand_texture(FT* ft)
             return false;
         }
 
-        glGetTexLevelParameteriv(GL_TEXTURE_RECTANGLE, 0, 
+        glGetTexLevelParameteriv(GL_TEXTURE, 0, 
                                  GL_TEXTURE_WIDTH, &width);
-        glGetTexLevelParameteriv(GL_TEXTURE_RECTANGLE, 0, 
+        glGetTexLevelParameteriv(GL_TEXTURE, 0, 
                                  GL_TEXTURE_HEIGHT, &height);
 
         if (width == 0 || height == 0) {
@@ -53,7 +54,7 @@ bool expand_texture(FT* ft)
         size_t alloc = ft->texture.width * ft->texture.height;
         auto buffer = unique_ptr<GLubyte>(new GLubyte[alloc]);
 
-        glGetTexImage(GL_TEXTURE_RECTANGLE, 0, GL_RED, 
+        glGetTexImage(GL_TEXTURE, 0, GL_RED, 
             GL_UNSIGNED_BYTE, buffer.get());
 
         int original_texture_height = ft->texture.height;
@@ -65,17 +66,17 @@ bool expand_texture(FT* ft)
         auto data = unique_ptr<GLubyte>(new GLubyte[alloc]);
         memset(data.get(), 0, alloc);
 
-        glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R8, ft->texture.width, 
+        glTexImage2D(GL_TEXTURE, 0, GL_R8, ft->texture.width, 
             ft->texture.height, 0, GL_RED, GL_UNSIGNED_BYTE, data.get());
 
-		glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, 
+		glTexSubImage2D(GL_TEXTURE, 0, 0, 0, 
             ft->texture.width, original_texture_height, GL_RED,
             GL_UNSIGNED_BYTE, buffer.get());
 
-        glGetTexLevelParameteriv(GL_TEXTURE_RECTANGLE, 0, 
+        glGetTexLevelParameteriv(GL_TEXTURE, 0, 
             GL_TEXTURE_WIDTH, &ft->texture.width);
 
-		glGetTexLevelParameteriv(GL_TEXTURE_RECTANGLE, 0, 
+		glGetTexLevelParameteriv(GL_TEXTURE, 0, 
             GL_TEXTURE_HEIGHT, &ft->texture.height);
     }
 
@@ -84,6 +85,7 @@ bool expand_texture(FT* ft)
 
 FT* ft_load_library(const string& filename)
 {
+    glGetError();
     auto library = font_library.find(filename);
     if (library != font_library.end())
         return library->second.get();
@@ -107,8 +109,9 @@ FT* ft_load_library(const string& filename)
 
     // Generate a new texture
     glGenTextures(1, &ft.texture.id);
-    if (glGetError()) {
-        cerr << "Failed to create a texture." << endl;
+    int glerr = glGetError();
+    if (glerr) {
+        cerr << "Failed to create a texture: " << glerr << endl;
         return nullptr;
     }
 
@@ -136,7 +139,8 @@ bool Font::load(const string& filename, uint32_t index)
     FT_Error err = FT_New_Face(ft->library, filename.c_str(), 
                                   index, &ft_face);
     if (err) {
-        cerr << "Failed to load ft_face for " << filename << endl;
+        cerr << "Failed to load ft_face for " << filename << " with error "
+             << err << endl;
         valid_font = false;
         return false;
     }
@@ -206,34 +210,45 @@ const Glyph* Font::get(uint32_t font_size, char character)
     if (uplast != 1) 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, ft->pen.x, ft->pen.y,
+    glTexSubImage2D(GL_TEXTURE, 0, ft->pen.x, ft->pen.y,
         bitmap->width, bitmap->rows, GL_RED, GL_UNSIGNED_BYTE, data.get());
 
     if (uplast != 1)
         glPixelStorei(GL_UNPACK_ALIGNMENT, uplast);
 
     if ((GLuint)last_texture_id != ft->texture.id)
-        glBindTexture(GL_TEXTURE_RECTANGLE, last_texture_id);
+        glBindTexture(GL_TEXTURE, last_texture_id);
 
     Glyph& glyph = glyphs[ft_size][character];
     glyph.id = FT_Get_Char_Index(ft_face, (const FT_ULong)character);
+    glyph.texture = ft->texture.id;
     glyph.metrics = ft_face->glyph->metrics;
     glyph.advance = ft_face->glyph->advance;
-    GLfloat values[8] = {
-        /* Vertices */
-        ft_face->glyph->bitmap_left - 0.5f,
-        -bitmap->rows + ft_face->glyph->bitmap_top - 0.5f,
-        bitmap->width + ft_face->glyph->bitmap_left + 0.5f,
-        -bitmap->rows + ft_face->glyph->bitmap_top + bitmap->rows + 0.5f,
 
-        /* Texture Coordinates */
-        ft->pen.x - 0.5f,
-        ft->pen.y - 0.5f,
-        ft->pen.x + bitmap->width + 0.5f,
-        ft->pen.y + bitmap->rows + 0.5f
+    GLfloat l = ft_face->glyph->bitmap_left - 0.5f;
+    GLfloat b = -bitmap->rows + ft_face->glyph->bitmap_top - 0.5f;
+    GLfloat r = bitmap->width + ft_face->glyph->bitmap_left + 0.5f;
+    GLfloat t = -bitmap->rows + ft_face->glyph->bitmap_top + bitmap->rows + 0.5f;
+    GLfloat ul = ft->pen.x - 0.5f;
+    GLfloat ub = ft->pen.y - 0.5f;
+    GLfloat ur = ft->pen.x + bitmap->width + 0.5f;
+    GLfloat ut = ft->pen.y + bitmap->rows + 0.5f;
+
+    GLfloat vertices[20] = {
+    //  x  y  z         u   v
+        l, b, 0.0f,     ul, ub,     // bl
+        l, t, 0.0f,     ul, ut,     // tl
+        r, t, 0.0f,     ur, ut,     // tr
+        r, b, 0.0f,     ur, ub,     // br
     };
 
-    memcpy(&glyph.data, values, sizeof(glyph.data));
+    GLint elements[6] = {
+        0, 1, 3,
+        3, 2, 1
+    };
+
+    memcpy(&glyph.vertices, vertices, sizeof(glyph.vertices));
+    memcpy(&glyph.elements, elements, sizeof(glyph.elements));
 
     ft->pen.x += bitmap->width + 1;
     

@@ -14,9 +14,11 @@ namespace rb {
 
 struct Glyph {
     int id;
+    GLint texture;
     FT_Glyph_Metrics metrics;
     FT_Vector advance;
-    float data[8];
+    GLfloat vertices[20];
+    GLint elements[6];
 };
 
 typedef std::vector<const Glyph*> Glyph_vector;

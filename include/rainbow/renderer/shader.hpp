@@ -47,6 +47,8 @@ public:
              int size_of = sizeof(float), bool normalize = false);
     void vec3(int stride, int offset, 
              int size_of = sizeof(float), bool normalize = false);
+    void vec4(int stride, int offset, 
+             int size_of = sizeof(float), bool normalize = false);
 public:
     std::string name;
     GLuint glprogram;

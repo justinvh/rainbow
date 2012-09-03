@@ -206,6 +206,11 @@ void Attribute::vec3(int stride, int offset, int size_of, bool normalize)
     return eso(3, stride, offset, size_of, normalize);
 }
 
+void Attribute::vec4(int stride, int offset, int size_of, bool normalize)
+{
+    return eso(4, stride, offset, size_of, normalize);
+}
+
 Uniform::Uniform(GLuint glprogram, const std::string& name)
     : name(name), glprogram(glprogram)
 {
