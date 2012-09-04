@@ -1,9 +1,11 @@
+#include <iostream>
 #include <rainbow/renderer/camera.hpp>
 
 using namespace rb;
 
 Camera::Camera()
 {
+    theta_gl = phi_gl = 0.0f;
     fov_gl = 45.0f;
     aspect_ratio_gl = 480.0f / 640.0f;
     up = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -19,17 +21,25 @@ void Camera::move(float x, float y, float z)
 
 void Camera::look(float phi, float theta)
 {
-    const float right_vec_angle = 3.14f / 2.0f;
-    direction = glm::vec3(cos(phi) * sin(theta),
-                          sin(phi),
-                          cos(phi) * cos(theta));
+    theta_gl += theta;
+    phi_gl += phi;
 
-    glm::vec3 right(sin(theta - right_vec_angle),
+    const float right_vec_angle = 3.14f / 2.0f;
+    direction = glm::vec3(cos(phi_gl) * sin(theta_gl),
+                          sin(phi_gl),
+                          cos(phi_gl) * cos(theta_gl));
+
+    glm::vec3 right(sin(theta_gl - right_vec_angle),
                     0.0f,
-                    cos(theta - right_vec_angle));
+                    cos(theta_gl - right_vec_angle));
 
     up = glm::cross(direction, right);
     view = glm::lookAt(position, position + direction, up);
+
+    std::cout << "phi_gl:   " << phi_gl << " "
+              << "theta_gl: " << theta_gl << " "
+              << "x y z: " << position.x << " " 
+              << position.y << " " << position.z << std::endl;
 }
 
 void Camera::fov(float degrees)

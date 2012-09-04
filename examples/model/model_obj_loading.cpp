@@ -61,7 +61,12 @@ int main(int argc, char** argv)
     barebones->attrib("color").vec3(11, 3);
     barebones->use();
 
-    Camera camera;
+    Camera camera1, camera2;
+    Camera* active = &camera1;
+
+    camera2.position = glm::vec3(-1.8f, 0.0f, 0.0f);
+    camera2.look(0.114925f, 1.59037f);
+
     Uniform umodel = barebones->uniform("model");
     Uniform uview = barebones->uniform("view");
     Uniform uproj = barebones->uniform("proj");
@@ -69,16 +74,19 @@ int main(int argc, char** argv)
     glm::mat4 model;
     model = glm::rotate(model, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
     umodel.mat4(model);
-    uview.mat4(camera.view);
-    uproj.mat4(camera.projection);
+
+    uview.mat4(active->view);
+    uproj.mat4(active->projection);
 
     input.bind('q', [&quit](int event) { quit = true; })
          .bind('g', [&display](int event) { display.grab_mouse = true;  })
          .bind('r', [&display](int event) { display.grab_mouse = false; })
-         .bind('w', [&camera](int event) { camera.move_forward(); })
-         .bind('s', [&camera](int event) { camera.move_backward(); })
-         .bind('a', [&camera](int event) { camera.move_left(); })
-         .bind('d', [&camera](int event) { camera.move_right(); });
+         .bind('w', [&active](int event) { active->move_forward(); })
+         .bind('s', [&active](int event) { active->move_backward(); })
+         .bind('a', [&active](int event) { active->move_left(); })
+         .bind('d', [&active](int event) { active->move_right(); })
+         .bind('1', [&camera1, &active](int event) { active = &camera1; })
+         .bind('2', [&camera2, &active](int event) { active = &camera2; });
     
     // Run the actual engine
     uint64_t frame = 0;
@@ -87,8 +95,8 @@ int main(int argc, char** argv)
         input.run();
         display.clear();
 
-        camera.look(input.mouse.phi, input.mouse.theta);
-        uview.mat4(camera.view);
+        active->look(input.mouse.phi, input.mouse.theta);
+        uview.mat4(active->view);
 
         frame++;
         display.run();

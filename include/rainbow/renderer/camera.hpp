@@ -26,6 +26,8 @@ public:
 
     float fov_gl;
     float aspect_ratio_gl;
+    float theta_gl;
+    float phi_gl;
 };
 
 }

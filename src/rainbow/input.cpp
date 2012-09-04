@@ -80,8 +80,10 @@ void Input::run()
             mouse.x = 0;
             mouse.y = 0;
         }
-        mouse.theta += mouse.speed * timing.fps * mouse.x;
-        mouse.phi += mouse.speed * timing.fps * mouse.y;
-
+        mouse.theta = mouse.speed * timing.fps * mouse.x;
+        mouse.phi = mouse.speed * timing.fps * mouse.y;
+    } else {
+        mouse.theta = 0.0f;
+        mouse.phi = 0.0f;
     }
 }
