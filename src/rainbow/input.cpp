@@ -13,7 +13,7 @@ Input::Input(const Display& display)
     mouse.y = 0;
     mouse.theta = 0.0f;
     mouse.phi = 0.0f;
-    mouse.speed = 0.0005f;
+    mouse.speed = 0.00005f;
     show_cursor();
     flush_events();
 }

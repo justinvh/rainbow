@@ -13,6 +13,10 @@ public:
     void fov(float degrees);
     void aspect_ratio(float ratio);
     void update_perspective();
+    void move_right();
+    void move_left();
+    void move_forward();
+    void move_backward();
 public:
     glm::vec3 position;
     glm::vec3 direction;
