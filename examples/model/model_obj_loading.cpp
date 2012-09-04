@@ -78,13 +78,34 @@ int main(int argc, char** argv)
     uview.mat4(active->view);
     uproj.mat4(active->projection);
 
-    input.bind('q', [&quit](int event) { quit = true; })
+    float roll = 0.0f;
+    bool down = false;
+
+    input.bind('p', [&quit](int event) { quit = true; })
          .bind('g', [&display](int event) { display.grab_mouse = true;  })
          .bind('r', [&display](int event) { display.grab_mouse = false; })
          .bind('w', [&active](int event) { active->move_forward(); })
          .bind('s', [&active](int event) { active->move_backward(); })
          .bind('a', [&active](int event) { active->move_left(); })
          .bind('d', [&active](int event) { active->move_right(); })
+         .bind('e', [&active, &roll, &down](int event) { 
+                    if (event == SDL_KEYUP) {
+                        down = false;
+                    } else {
+                        roll = 0.5f; 
+                        active->roll(roll); 
+                        down = true;
+                    }
+          })
+         .bind('q', [&active, &roll, &down](int event) { 
+                    if (event == SDL_KEYUP) {
+                        down = false;
+                    } else {
+                        roll = -0.5f; 
+                        active->roll(roll); 
+                        down = true;
+                    }
+          })
          .bind('1', [&camera1, &active](int event) { active = &camera1; })
          .bind('2', [&camera2, &active](int event) { active = &camera2; });
     
@@ -101,6 +122,12 @@ int main(int argc, char** argv)
         frame++;
         display.run();
         display.end_frame();
+
+        if (!down && active->state.roll < (0.0f - 0.001f))
+            active->roll(-0.5f);
+        else if (!down && active->state.roll > (0.0f + 0.001f))
+            active->roll(0.5f);
+
     } while(!quit);
 
     return 0;

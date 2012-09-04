@@ -10,6 +10,7 @@ public:
     Camera();
     void move(float x, float y, float z);
     void look(float phi, float theta);
+    void roll(float angle);
     void fov(float degrees);
     void aspect_ratio(float ratio);
     void update_perspective();
@@ -21,13 +22,17 @@ public:
     glm::vec3 position;
     glm::vec3 direction;
     glm::vec3 up;
+    glm::vec3 right;
     glm::mat4 view;
     glm::mat4 projection;
 
-    float fov_gl;
-    float aspect_ratio_gl;
-    float theta_gl;
-    float phi_gl;
+    struct State {
+        float fov;
+        float aspect_ratio;
+        float theta;
+        float phi;
+        float roll;
+    } state;
 };
 
 }
