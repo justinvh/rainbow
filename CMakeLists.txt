@@ -7,13 +7,10 @@ option(rainbow_tests "Run the Rainbow tests." OFF)
 # CMAKE extensions
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${rainbow_SOURCE_DIR}/cmake")
 
-set(PythonLibs_FIND_VERSION 3.3)
-
 # Required packages
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(Python REQUIRED)
 find_package(GLM REQUIRED)
 find_package(Freetype REQUIRED)
 
@@ -29,11 +26,11 @@ include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
-include_directories(${PYTHON_INCLUDE_DIR})
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Rainbow Sources
 set(sources "src/rainbow/display/display.cpp"
+            "src/rainbow/display/gui.cpp"
             "src/rainbow/input.cpp"
             "src/rainbow/file.cpp"
             "src/rainbow/renderer/shader.cpp"
@@ -44,7 +41,6 @@ set(sources "src/rainbow/display/display.cpp"
             "src/rainbow/model/model.cpp"
             "src/rainbow/model/obj.cpp"
             "src/rainbow/math/random.cpp"
-            "src/rainbow/python.cpp"
 )
 
 # Construct the actual engine library

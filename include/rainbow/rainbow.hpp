@@ -2,7 +2,6 @@
 #define RAINBOW_RAINBOW_HPP
 
 #include <rainbow/gl.h>
-#include <rainbow/python.hpp>
 #include <rainbow/display.hpp>
 #include <rainbow/file.hpp>
 #include <rainbow/renderer.hpp>

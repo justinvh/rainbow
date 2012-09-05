@@ -18,6 +18,7 @@ Renderer::Renderer(Display* display)
 
 void Renderer::init()
 {
+    glEnable(GL_CULL_FACE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -65,7 +66,7 @@ void Renderer::init()
 void Renderer::run_frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDrawElements(GL_TRIANGLES, total_elements, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLE_STRIP, total_elements, GL_UNSIGNED_INT, nullptr);
 }
 
 GLuint Renderer::add_static_vertices(const float* vertices, 

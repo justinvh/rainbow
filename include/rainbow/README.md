@@ -27,3 +27,7 @@ as random number generation, glm-wrappers, and so on.
 ### `model` ###
 Model interaction and loading. These are formats that will typically provide
 ways of getting model data into the renderer.
+
+### `python` ###
+Python wrappers, interactions, and utilities for integrating the Python 3.x
+programming language within the engine.
