@@ -3,7 +3,6 @@
 
 #include <rainbow/renderer/renderer.hpp>
 #include <rainbow/renderer/shader.hpp>
-#include <rainbow/renderer/font.hpp>
 #include <rainbow/renderer/camera.hpp>
 
 #endif // RAINBOW_RENDERER_HPP
