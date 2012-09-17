@@ -28,6 +28,8 @@ int main(int argc, char** argv)
     // Handle our input binding in its base form
     Input input(display);
 
+    scripting::load("game/js/gui.js");
+
     // Handle some basic shader tests
     Renderer& renderer = *display.renderer;
     Shader_entry shaders[] = {

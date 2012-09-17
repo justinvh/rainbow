@@ -2,17 +2,23 @@
 #define RAINBOW_DISPLAY_GUI_HPP
 
 #include <iostream>
+#include <rainbow/scripting/scriptable.hpp>
 
 namespace rb {
 
-class Gui {
+class Gui : public Scriptable<Gui> {
 public:
-    Gui();
     void draw(int x, int y, const std::string& message);
-public:
-    int id;
-};
 
+public:
+    std::string source;
+
+public:
+    static const char* name() { return "Gui"; }
+    static v8::Persistent<v8::FunctionTemplate>& function_tmpl();
+    static Easy_accessor* accessors();
+};
+    
 }
 
 #endif // RAINBOW_DISPLAY_GUI_HPP

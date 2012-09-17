@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
+find_package(V8 REQUIRED)
 
 # Warning pedantic flags for all
 set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
@@ -25,6 +26,7 @@ include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
+include_directories(${V8_INCLUDE_DIR})
 
 # Rainbow Sources
 set(sources "src/rainbow/display/display.cpp"
@@ -38,6 +40,8 @@ set(sources "src/rainbow/display/display.cpp"
             "src/rainbow/model/model.cpp"
             "src/rainbow/model/obj.cpp"
             "src/rainbow/math/random.cpp"
+            "src/rainbow/scripting/stdlib.cpp"
+            "src/rainbow/scripting/logging.cpp"
 )
 
 # Construct the actual engine library
@@ -46,6 +50,7 @@ target_link_libraries(rainbow
                       ${SDL2_LIBRARY} 
                       ${OPENGL_LIBRARIES} 
                       ${GLEW_LIBRARY}
+                      ${V8_LIBRARY}
                       ${PYTHON_LIBRARY})
                   
 # Build the examples 

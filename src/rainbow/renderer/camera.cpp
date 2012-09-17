@@ -42,11 +42,13 @@ void Camera::look(float phi, float theta)
 
     view *= glm::lookAt(p, p + direction, up);
 
+    /*
     std::cout << "state.phi:   " << state.phi << " "
               << "state.theta: " << state.theta << " "
               << "x y z: " << p.x << " " 
               << p.y << " " << p.z << " "
               << "roll: " << state.roll << std::endl;
+    */
 }
 
 void Camera::fov(float degrees)
