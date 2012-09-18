@@ -9,6 +9,7 @@ a rework of the original [Tom Clancy's Rainbow Six: Rogue Spear][roguespear].
 
 * [CMake 2.8][cmake]
 * [SDL2 with OpenGL 3.x Support][sdl2]
+* [SDL_ttf][sdl_ttf]
 * [GLEW][glew]
 * [GLM][glm]
 * [V8 JavaScript Engine][v8]
@@ -45,6 +46,7 @@ C++11 support is required to build Rainbow. This includes support for
   [mit]: http://opensource.org/licenses/mit-license.php "The MIT License"
   [roguespear]: http://goo.gl/eHJzm "Tom Cancy's Rainbow Six: Rogue Spear"
   [sdl2]: http://hg.libsdl.org/SDL "SDL2 HEAD"
+  [sdl_ttf]: http://hg.libsdl.org/SDL_ttf/summary
   [sdl2patch]: http://pastebin.com/3MTjjGPe
   [glew]: http://glew.sourceforge.net/ "The OpenGL Extension Wrangler"
   [glm]: http://glm.g-truc.net/ "OpenGL Mathematics"
