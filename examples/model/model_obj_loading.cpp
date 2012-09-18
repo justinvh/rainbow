@@ -31,8 +31,6 @@ int main(int argc, char** argv)
     state.renderer = display.renderer;
     state.input = &input;
 
-    scripting::load(&state, "game/js/gui.js");
-
     // Handle some basic shader tests
     Renderer& renderer = *display.renderer;
     Shader_entry shaders[] = {

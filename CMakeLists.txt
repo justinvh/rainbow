@@ -10,6 +10,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${rainbow_SOURCE_DIR}/cmake")
 # Required packages
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(SDL2TTF REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
 find_package(V8 REQUIRED)
@@ -23,10 +24,12 @@ message(STATUS ${PYTHON_INCLUDE_DIRS})
 # Dependencies and include locations
 include_directories("include")
 include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${SDL2TTF_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
 include_directories(${V8_INCLUDE_DIR})
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Rainbow Sources
 set(sources "src/rainbow/display/display.cpp"
@@ -49,10 +52,12 @@ set(sources "src/rainbow/display/display.cpp"
 add_library(rainbow ${sources})
 target_link_libraries(rainbow 
                       ${SDL2_LIBRARY} 
+                      ${SDL2TTF_LIBRARY} 
                       ${OPENGL_LIBRARIES} 
                       ${GLEW_LIBRARY}
                       ${V8_LIBRARY}
-                      ${PYTHON_LIBRARY})
+                      ${PYTHON_LIBRARY}
+                      ${FREETYPE_LIBRARIES})
                   
 # Build the examples 
 if(${rainbow_examples})

@@ -1,3 +1,4 @@
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <chrono>
 #include <rainbow/gl.h>
@@ -25,6 +26,7 @@ Display::Display(const char* display_name)
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         throw SDL_GetError();
 
+    TTF_Init();
     renderer = new Renderer(this);
 }
 

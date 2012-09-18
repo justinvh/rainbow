@@ -3,3 +3,4 @@ project(rainbow_examples)
 
 add_subdirectory("map")
 add_subdirectory("model")
+add_subdirectory("font")

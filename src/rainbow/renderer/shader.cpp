@@ -221,3 +221,8 @@ void Uniform::mat4(glm::mat4 matrix)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(matrix));
 }
+
+void Uniform::int1(int val)
+{
+    glUniform1i(uniform, val);
+}

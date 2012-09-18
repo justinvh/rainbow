@@ -8,7 +8,7 @@ namespace rb {
 
 class Gui : public Scriptable<Gui> {
 public:
-    void draw(int x, int y, const std::string& message);
+    void draw(int x, int y, const std::string& message, const std::string& shader_name = "gui");
 
 public:
     std::string source;

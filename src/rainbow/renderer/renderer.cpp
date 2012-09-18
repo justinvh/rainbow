@@ -18,7 +18,6 @@ Renderer::Renderer(Display* display)
 
 void Renderer::init()
 {
-    glEnable(GL_CULL_FACE);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -29,8 +28,18 @@ void Renderer::init()
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glDepthMask(GL_TRUE);
+    glEnable(GL_TEXTURE_2D);
+
+    glGenVertexArrays(1, &vao_static);
+    glGenBuffers(1, &vbo_static);
+    glGenBuffers(1, &ebo_static);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    vertices_static = (float*)(malloc(16 * sizeof(float)));
+    vertices_static_size = 0;
+    elements_static = (int*)(malloc(16 * sizeof(int)));
+    elements_static_size = 0;
 
     // Store our GL context information
     info.driver_name = SDL_GetCurrentVideoDriver();
@@ -66,32 +75,81 @@ void Renderer::init()
 void Renderer::run_frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDrawElements(GL_TRIANGLE_STRIP, total_elements, GL_UNSIGNED_INT, nullptr);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_static);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_static);
+
+    for (Static_entry entry : static_draws) {
+        entry.setup();
+        glDrawRangeElements(GL_TRIANGLES, 
+                            entry.begin,
+                            entry.end,
+                            entry.count,
+                            GL_UNSIGNED_INT, 
+                            (const GLuint*)0 + entry.offset);
+    }
 }
 
 GLuint Renderer::add_static_vertices(const float* vertices, 
                                      uint32_t vlength,
                                      const int* elements,
-                                     uint32_t elength)
+                                     uint32_t elength,
+                                     std::function<void(void)> setup)
 {
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    
+    glBindVertexArray(vao_static);
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vlength, vertices, GL_STATIC_DRAW);
+    // Reallocate the vertices
+    int realloc_vsize = vertices_static_size + vlength;
+    float* t = (float*)malloc(realloc_vsize);
+    memcpy(t, vertices_static, vertices_static_size);
+    memcpy(t + vertices_static_size / sizeof(int), vertices, vlength);
+    free(vertices_static);
+    vertices_static = t;
 
-    GLuint ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elength, elements, GL_STATIC_DRAW);
+    // Bind the new buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_static);
+    glBufferData(GL_ARRAY_BUFFER, realloc_vsize, 
+        vertices_static, GL_STATIC_DRAW);
+    
+    // Reallocate the elements
+    int realloc_esize = elements_static_size + elength;
+    int* s = (int*)malloc(realloc_esize);
+    memcpy(s, elements_static, elements_static_size);
+    memcpy(s + elements_static_size / sizeof(int), elements, elength);
+    free(elements_static);
+    elements_static = s;
 
-    total_vertices += vlength;
-    total_elements += elength;
+    // adjust the elements data
+    for (int i = 0; i < elength / sizeof(int); i++)  {
+        size_t offset = elements_static_size / sizeof(int);
+        elements_static[i + offset] += (vertices_static_size / sizeof(int) / 7);
+    }
 
-    return vbo;
+    // adjust the elements data
+    for (int i = 0; i < realloc_esize / sizeof(int); i++) 
+        std::cout << elements_static[i] << " ";
+
+    // Update the elements array
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_static);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, realloc_esize, 
+        elements_static, GL_STATIC_DRAW);
+
+    // Create a new static entry draw routine
+    size_t element_offset = elements_static_size / sizeof(GLuint);
+    size_t element_count = (realloc_esize-elements_static_size)/sizeof(GLuint);
+    Static_entry entry = {elements_static_size,  // begin
+                          realloc_esize,         // end
+                          element_count,         // count
+                          element_offset,        // offset
+                          setup};                // setup
+
+    // Add to draw list
+    static_draws.push_back(entry);
+
+    // Update the new static allocator sizes
+    elements_static_size = realloc_esize;
+    vertices_static_size = realloc_vsize;
+    return vbo_static;
 }
 
 GLuint Renderer::add_dynamic_vertices(float* vertices, uint32_t length)
@@ -123,6 +181,18 @@ int Renderer::add_shader(const std::string& name,
                                               fragment, raise_exception));
     shaders[shader_count] = std::move(shader);
     return shader_count;
+}
+
+// TODO(justinvh): Do what this actually says
+Shader* Renderer::get_or_create_shader(const std::string& name)
+{
+    std::stringstream vertex, fragment;
+    vertex << "game/shaders/" << name << ".vert";
+    fragment << "game/shaders/" << name << ".frag";
+    string vertex_str = vertex.str();
+    string fragment_str = fragment.str();
+    int n = add_shader(name, vertex_str, fragment_str, true);
+    return shaders[n].get();
 }
 
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
 #include <exception>
 
 #include <rainbow/gl.h>
@@ -32,6 +33,11 @@ public:
     Renderer* renderer;
 };
 
+struct Static_entry {
+    size_t begin, end, count, offset;
+    std::function<void(void)> setup;
+};
+
 typedef std::map<int, std::unique_ptr<Shader>> Shader_map;
 class Renderer {
 public:
@@ -40,9 +46,11 @@ public:
     void init();
     void run_frame();
     GLuint add_static_vertices(const float* vertices, uint32_t vlength,
-                               const int* elements, uint32_t elength);
+                               const int* elements, uint32_t elength,
+                               std::function<void(void)> setup = [](){});
     GLuint add_dynamic_vertices(float* vertices, uint32_t length);
     GLuint add_stream_vertices(float* vertices, uint32_t length);
+    Shader* get_or_create_shader(const std::string& name);
     int add_shader(const std::string& name,
                    const std::string& vertex, 
                    const std::string& fragment,
@@ -53,9 +61,19 @@ public:
     GL_info info;
 
 public:
+    std::vector<Static_entry> static_draws;
     uint32_t total_elements;
     uint32_t total_vertices;
     Renderer_tests tests;
+
+public:
+    GLuint vao_static;
+    GLuint vbo_static;
+    GLuint ebo_static;
+    float* vertices_static;
+    size_t vertices_static_size;
+    int* elements_static;
+    size_t elements_static_size;
 };
 
 }

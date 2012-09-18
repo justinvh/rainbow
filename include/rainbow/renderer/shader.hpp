@@ -59,6 +59,7 @@ class Uniform {
 public:
     Uniform() = default;
     Uniform(GLuint glprogram, const std::string& name);
+    void int1(int value);
     void mat4(glm::mat4 matrix);
 public:
     std::string name;
