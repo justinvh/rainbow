@@ -28,6 +28,9 @@ as random number generation, glm-wrappers, and so on.
 Model interaction and loading. These are formats that will typically provide
 ways of getting model data into the renderer.
 
-### `python` ###
-Python wrappers, interactions, and utilities for integrating the Python 3.x
+### `scripting` ###
+JavaScript wrappers, interactions, and utilities for integrating the JavaScript
 programming language within the engine.
+
+### `v8` ###
+Utilities, wrappers, and so on for integrating with the v8 engine.
