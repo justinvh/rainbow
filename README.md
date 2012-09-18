@@ -16,7 +16,7 @@ a rework of the original [Tom Clancy's Rainbow Six: Rogue Spear][roguespear].
 
 ## Building ##
 
-    $ git://github.com/justinvh/rainbow.git
+    $ git clone git://github.com/justinvh/rainbow.git
     $ cd rainbow
     $ mkdir build
     $ cd build
