@@ -2,6 +2,7 @@
 #include <rainbow/scripting/stdlib.hpp>
 #include <rainbow/scripting/logging.hpp>
 #include <rainbow/display/gui.hpp>
+#include <rainbow/state.hpp>
 
 using namespace rb;
 using namespace v8;
@@ -25,7 +26,7 @@ Handle<ObjectTemplate> scripting::stdlib()
     return stdlib_tmpl;
 }
 
-bool scripting::load(const std::string& file)
+bool scripting::load(Engine_state* state, const std::string& file)
 {
     Contents content = read(file);
     if (!content.valid)
@@ -33,10 +34,14 @@ bool scripting::load(const std::string& file)
 
     HandleScope handle_scope;
     Handle<ObjectTemplate> global = scripting::stdlib();
+    global->SetInternalFieldCount(1);
 
     // Assign global stuff
     {
         Persistent<Context> context = Context::New(0, global);
+        Handle<Object> proxy = context->Global();
+        Handle<Object> proxy_as_global = proxy->GetPrototype().As<Object>();
+        proxy_as_global->SetPointerInInternalField(0, state);
         Context::Scope context_scope(context);
         {
             auto source = String::New(content.data.c_str());

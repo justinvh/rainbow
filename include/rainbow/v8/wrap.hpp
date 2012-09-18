@@ -8,7 +8,8 @@ namespace rb {
 inline
 void generic_object_template(const char* name,
     v8::Handle<v8::FunctionTemplate>& function_template,
-    Easy_accessor* accessor_list)
+    Accessors accessor_list,
+    Functions function_list)
 {
     if (!function_template.IsEmpty()) return;
 
@@ -17,10 +18,12 @@ void generic_object_template(const char* name,
     v8::Local<v8::ObjectTemplate> self = tmpl->InstanceTemplate();
     self->SetInternalFieldCount(1);
     v8::Local<v8::ObjectTemplate> proto = tmpl->PrototypeTemplate();
-    for (int i = 0; ; i++) {
-        const Easy_accessor& e = accessor_list[i];
-        if (e.name == nullptr) break;
+    for (const Easy_accessor& e : accessor_list) {
         proto->SetAccessor(v8::String::NewSymbol(e.name), e.getter, e.setter);
+    }
+    for (const Easy_function& f : function_list) {
+        proto->Set(v8::String::NewSymbol(f.name),
+                   v8::FunctionTemplate::New(f.caller));
     }
     function_template = v8::Persistent<v8::FunctionTemplate>::New(tmpl);
 }

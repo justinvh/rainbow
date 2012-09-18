@@ -5,9 +5,11 @@
 #include <string>
 
 namespace rb {
+struct Engine_state;
+
 namespace scripting {
 v8::Handle<v8::ObjectTemplate> stdlib();
-bool load(const std::string& file);
+bool load(Engine_state* engine, const std::string& file);
 }
 }
 

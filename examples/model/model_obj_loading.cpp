@@ -24,11 +24,14 @@ int main(int argc, char** argv)
     // Initialize the display
     Display display("Rainbow");
     display.resolution(640, 480);
-
-    // Handle our input binding in its base form
     Input input(display);
 
-    scripting::load("game/js/gui.js");
+    Engine_state state;
+    state.display = &display;
+    state.renderer = display.renderer;
+    state.input = &input;
+
+    scripting::load(&state, "game/js/gui.js");
 
     // Handle some basic shader tests
     Renderer& renderer = *display.renderer;

@@ -9,5 +9,6 @@
 #include <rainbow/map.hpp>
 #include <rainbow/model.hpp>
 #include <rainbow/scripting.hpp>
+#include <rainbow/state.hpp>
 
 #endif // RAINBOW_RAINBOW_HPP

@@ -42,6 +42,7 @@ set(sources "src/rainbow/display/display.cpp"
             "src/rainbow/math/random.cpp"
             "src/rainbow/scripting/stdlib.cpp"
             "src/rainbow/scripting/logging.cpp"
+            "src/rainbow/v8/type_conversion.cpp"
 )
 
 # Construct the actual engine library
