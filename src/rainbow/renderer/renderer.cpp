@@ -72,12 +72,32 @@ void Renderer::init()
     }
 }
 
+void Renderer::camera_frame()
+{
+    if (!camera)
+        return;
+
+    camera->shader->use();
+}
+
 void Renderer::run_frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_static);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_static);
 
+        // Final pass
+    camera_frame();
+    for (Static_entry entry : static_draws) {
+        glDrawRangeElements(GL_TRIANGLES, 
+                            entry.begin,
+                            entry.end,
+                            entry.count,
+                            GL_UNSIGNED_INT, 
+                            (const GLuint*)0 + entry.offset);
+    }
+
+    // Static pass
     for (Static_entry entry : static_draws) {
         entry.setup();
         glDrawRangeElements(GL_TRIANGLES, 
@@ -183,6 +203,31 @@ int Renderer::add_shader(const std::string& name,
     return shader_count;
 }
 
+int Renderer::add_fragment_shader(const std::string& name,
+                         const std::string& fragment,
+                         bool raise_exception)
+{
+    static int shader_count = 1000;
+    shader_count++;
+    std::unique_ptr<Shader> shader(new Shader(name, fragment, 
+                Shader_type::FRAGMENT, raise_exception));
+    shaders[shader_count] = std::move(shader);
+    return shader_count;
+}
+
+int Renderer::add_vertex_shader(const std::string& name,
+                                const std::string& vertex,
+                                bool raise_exception)
+{
+    static int shader_count = 500;
+    shader_count++;
+    std::unique_ptr<Shader> shader(new Shader(name, vertex, 
+                Shader_type::VERTEX, raise_exception));
+    shaders[shader_count] = std::move(shader);
+    return shader_count;
+}
+
+
 // TODO(justinvh): Do what this actually says
 Shader* Renderer::get_or_create_shader(const std::string& name)
 {
@@ -194,6 +239,25 @@ Shader* Renderer::get_or_create_shader(const std::string& name)
     int n = add_shader(name, vertex_str, fragment_str, true);
     return shaders[n].get();
 }
+
+Shader* Renderer::get_or_create_fragment_shader(const std::string& name)
+{
+    std::stringstream fragment;
+    fragment << "game/shaders/" << name << ".frag";
+    string fragment_str = fragment.str();
+    int n = add_fragment_shader(name, fragment_str, true);
+    return shaders[n].get();
+}
+
+Shader* Renderer::get_or_create_vertex_shader(const std::string& name)
+{
+    std::stringstream vertex;
+    vertex << "game/shaders/" << name << ".vert";
+    string vertex_str = vertex.str();
+    int n = add_vertex_shader(name, vertex_str, true);
+    return shaders[n].get();
+}
+
 
 
 void Renderer_tests::color_square()

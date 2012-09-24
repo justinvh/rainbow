@@ -26,60 +26,25 @@ int main(int argc, char** argv)
     display.resolution(640, 480);
     Input input(display);
 
-    Engine_state state;
-    state.display = &display;
-    state.renderer = display.renderer;
-    state.input = &input;
-
     // Handle some basic shader tests
     Renderer& renderer = *display.renderer;
-    Shader_entry shaders[] = {
-        {"barebones", "game/shaders/barebones.vert", 
-            "game/shaders/barebones.frag", nullptr},
-    };
-
-    // Load the shaders
-    for (Shader_entry& e: shaders) {
-        int n = renderer.add_shader(e.name, e.vert, e.frag, false);
-        Shader* shader = renderer.shaders[n].get();
-        if (!shader->valid) {
-            std::cerr << shader->error << std::endl;
-            return 3;
-        }
-        e.shader = shader;
-    }
+    Shader* model_shader = renderer.get_or_create_shader("model");
+    model_shader->attrib("color").vec3(11, 3);
 
     for (int i = 1; i < argc; i++) {
-        std::cout << "Loading: " << argv[1] << "\n";
-        Model_unique obj = load_model(argv[1], Model_format::OBJ);
+        std::cout << "Loading: " << argv[i] << "\n";
+        Model_unique obj = load_model(argv[i], Model_format::OBJ);
         renderer.add_static_vertices(obj->verts(),
                                      obj->vert_size(),
                                      obj->elements(),
-                                     obj->element_size());
+                                     obj->element_size(),
+                                     [&model_shader]() {
+                                        model_shader->use();
+                                     });
     }
 
-    // render a test square with the 
-    Shader* barebones = shaders[0].shader;
-    barebones->attrib("position").vec3(11, 0);
-    barebones->attrib("color").vec3(11, 3);
-    barebones->use();
-
-    Camera camera1, camera2;
+    Camera camera1(&renderer, true);
     Camera* active = &camera1;
-
-    camera2.position = glm::vec3(-1.8f, 0.0f, 0.0f);
-    camera2.look(0.114925f, 1.59037f);
-
-    Uniform umodel = barebones->uniform("model");
-    Uniform uview = barebones->uniform("view");
-    Uniform uproj = barebones->uniform("proj");
-
-    glm::mat4 model;
-    model = glm::rotate(model, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-    umodel.mat4(model);
-
-    uview.mat4(active->view);
-    uproj.mat4(active->projection);
 
     float roll = 0.0f;
     bool down = false;
@@ -109,8 +74,7 @@ int main(int argc, char** argv)
                         down = true;
                     }
           })
-         .bind('1', [&camera1, &active](int event) { active = &camera1; })
-         .bind('2', [&camera2, &active](int event) { active = &camera2; });
+         .bind('1', [&camera1, &active](int event) { active = &camera1; });
     
     // Run the actual engine
     uint64_t frame = 0;
@@ -120,7 +84,6 @@ int main(int argc, char** argv)
         display.clear();
 
         active->look(input.mouse.phi, input.mouse.theta);
-        uview.mat4(active->view);
 
         frame++;
         display.run();

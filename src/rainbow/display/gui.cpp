@@ -22,12 +22,14 @@ using namespace v8;
 Handle<Value> draw(const Arguments& args);
 
 namespace {
+
 Accessors gui_accessors;
 Functions gui_functions = {
     {"draw", &draw}
 };
 
 Persistent<FunctionTemplate> gui_function_tmpl;
+
 }
 
 v8::Persistent<v8::FunctionTemplate>& Gui::function_tmpl()
@@ -62,30 +64,34 @@ Handle<Value> draw(const Arguments& args)
     return True();
 }
 
-void Gui::draw(int x, int y, const std::string& message, const std::string& shader_name)
+void Gui::draw(int x, int y, const std::string& message, 
+        const std::string& shader_name)
 {
     Engine_state* state = unwrap_global_pointer<Engine_state>(0);
-	SDL_Color black = {0xFF, 0xFF, 0xFF, 0};
+    SDL_Color black = {0xFF, 0xFF, 0xFF, 0};
     TTF_Font* font = TTF_OpenFont("game/fonts/WellrockSlab.ttf", 32);
-	SDL_Surface* font_surface = TTF_RenderText_Solid(font, message.c_str(), black);
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	SDL_Surface* tmp = SDL_CreateRGBSurface(0, font_surface->w, font_surface->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_BlitSurface(font_surface, nullptr, tmp, nullptr);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmp->w, tmp->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    SDL_Surface* font_surface = TTF_RenderText_Solid(font, message.c_str(), 
+                                                     black);
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    SDL_Surface* tmp = SDL_CreateRGBSurface(0, font_surface->w, 
+        font_surface->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    SDL_BlitSurface(font_surface, nullptr, tmp, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmp->w, tmp->h, 0, 
+            GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
 
-	float l = x / 640.0f - 1.0;
-	float t = -y / 480.0f + 1.0;
-	float r = l + font_surface->w / 640.0f;
-	float b = t - font_surface->h / 480.0f;
+    float l = x / 640.0f - 1.0;
+    float t = -y / 480.0f + 1.0;
+    float r = l + font_surface->w / 640.0f;
+    float b = t - font_surface->h / 480.0f;
 
     std::cout << "Drawing " << x << " " << y << ": " << message << " at "
-              << "l: " << l << ", t: " << t << ", r: " << r << ", b: " << b
-              << "\n";
+        << "l: " << l << ", t: " << t << ", r: " << r << ", b: " << b
+        << "\n";
 
     float vertices[] = {
-    //  Position      Color             Texcoords
+        //  Position      Color             Texcoords
         l, t, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Top-left
         r, t, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // Top-right
         r, b, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Bottom-right

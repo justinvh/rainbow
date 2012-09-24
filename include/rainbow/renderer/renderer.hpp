@@ -14,6 +14,7 @@ namespace rb {
 
 class Display;
 class Renderer;
+class Camera;
 
 typedef std::map<std::string, bool> GL_extensions;
 struct GL_info {
@@ -51,11 +52,23 @@ public:
     GLuint add_dynamic_vertices(float* vertices, uint32_t length);
     GLuint add_stream_vertices(float* vertices, uint32_t length);
     Shader* get_or_create_shader(const std::string& name);
+    Shader* get_or_create_fragment_shader(const std::string& name);
+    Shader* get_or_create_vertex_shader(const std::string& name);
+    void camera_frame();
     int add_shader(const std::string& name,
                    const std::string& vertex, 
                    const std::string& fragment,
                    bool raise_exception);
+    int add_fragment_shader(const std::string& name,
+                            const std::string& fragment,
+                            bool raise_exception);
+    int add_vertex_shader(const std::string& name,
+                          const std::string& vertex,
+                          bool raise_exception);
+
+
 public:
+    Camera* camera;
     Display* display;
     Shader_map shaders;
     GL_info info;

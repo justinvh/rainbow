@@ -37,8 +37,9 @@ bool Display::resolution(int width, int height)
         SDL_DestroyWindow(screen);
     }
 
-    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                    640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, 
+                              SDL_WINDOWPOS_CENTERED, 640, 480, 
+                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     screen_center_x = width / 2;
     screen_center_y = height / 2;
