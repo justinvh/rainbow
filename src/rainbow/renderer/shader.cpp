@@ -25,17 +25,43 @@ Shader::Shader(const std::string& name,
         return;
     }
 
+    attach();
+
     if (!link()) {
         if (raise_exception)
             throw bad_shader(name, error, Shader_type::PROGRAM);
         return;
     }
 
-    attach();
+    valid = true;
+}
+
+Shader::Shader(const std::string& name,
+               const std::string& file, 
+               Shader_type shader_type,
+               bool raise_exception)
+{
+    initialize(name);
+
+    if (!compile(file, shader_type)) {
+        if (raise_exception)
+            throw bad_shader(file, error, Shader_type::VERTEX);
+        return;
+    }
+
+    if (!link()) {
+        if (raise_exception)
+            throw bad_shader(name, error, Shader_type::PROGRAM);
+        return;
+    }
+
+    attach(shader_type);
     link();
 
     valid = true;
 }
+
+
 
 Shader::~Shader()
 {
@@ -94,7 +120,7 @@ bool Shader::compile(const std::string& shader_file, Shader_type shader_type)
     return true;
 }
 
-bool Shader::attach()
+bool Shader::attach(Shader_type which)
 {
     if (glprogram == -1) {
         valid = false;
@@ -102,8 +128,15 @@ bool Shader::attach()
         return false;
     }
 
-    glAttachShader(glprogram, vertex_shader);
-    glAttachShader(glprogram, fragment_shader);
+    if (which == Shader_type::NOT_PROVIDED) {
+        glAttachShader(glprogram, vertex_shader);
+        glAttachShader(glprogram, fragment_shader);
+    } else if (which == Shader_type::VERTEX) {
+        glAttachShader(glprogram, vertex_shader);
+    } else if (which == Shader_type::FRAGMENT) {
+        glAttachShader(glprogram, fragment_shader);
+    }
+
     return true;
 }
 

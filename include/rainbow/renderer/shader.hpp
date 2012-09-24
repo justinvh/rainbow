@@ -71,6 +71,10 @@ class Shader {
 public:
     Shader() = default;
     Shader(const std::string& name,
+            const std::string& file,
+            Shader_type shader_type,
+            bool raise_exception = false);
+    Shader(const std::string& name,
            const std::string& vertex_file,
            const std::string& fragment_file,
            bool raise_exception = false);
@@ -79,7 +83,7 @@ public:
     bool initialize(const std::string& name);
     bool compile(const std::string& shader_file, 
                  Shader_type shader_type = Shader_type::NOT_PROVIDED);
-    bool attach();
+    bool attach(Shader_type which = Shader_type::NOT_PROVIDED);
     bool link();
     bool bind(const std::string& what, Shader_type where);
     bool use();
