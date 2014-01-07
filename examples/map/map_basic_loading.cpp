@@ -31,8 +31,8 @@ int main(int argc, char** argv)
     // Handle some basic shader tests
     Renderer& renderer = *display.renderer;
     Shader_entry shaders[] = {
-        {"barebones", "game/shaders/barebones.vert", 
-            "game/shaders/barebones.frag", nullptr},
+        {"barebones", "game/shaders/barebones.vert",
+         "game/shaders/barebones.frag", nullptr},
     };
 
     // Load the shaders
@@ -47,12 +47,12 @@ int main(int argc, char** argv)
     }
 
     Map test_map(argv[1]);
-    renderer.add_static_vertices(test_map.verts.get(), 
+    renderer.add_static_vertices(test_map.verts.get(),
                                  test_map.vert_size,
-                                 test_map.elements.get(), 
+                                 test_map.elements.get(),
                                  test_map.element_size);
 
-    // render a test square with the 
+    // render a test square with the
     Shader* barebones = shaders[0].shader;
     barebones->attrib("position").vec2(5, 0);
     barebones->attrib("color").vec3(5, 2);
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     Uniform uproj = barebones->uniform("proj");
 
     int rotation = 0;
-    input.bind('w', [&rotation](int event) { 
+    input.bind('w', [&rotation](int event) {
         rotation = (rotation + 1) % 180;
     }).bind('s', [&rotation](int event) {
         rotation = (rotation - 1) % 180;
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
         display.clear();
         display.run();
         display.end_frame();
-        trans = glm::rotate(trans, float(rotation), 
+        trans = glm::rotate(trans, float(rotation),
                             glm::vec3(0.0f, 0.0f, 1.0f));
         utrans.mat4(trans);
     } while(!quit);

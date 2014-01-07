@@ -21,6 +21,9 @@ int main(int argc, char** argv)
 
     bool quit = false;
 
+    // Set the logger to debug
+    DefaultLogger::level(LogLevel::debug);
+
     // Initialize the display
     Display display("Rainbow");
     display.resolution(640, 480);
@@ -32,15 +35,12 @@ int main(int argc, char** argv)
     model_shader->attrib("color").vec3(11, 3);
 
     for (int i = 1; i < argc; i++) {
-        std::cout << "Loading: " << argv[i] << "\n";
+        log_info("Loading: {}"_format(argv[i]));
         Model_unique obj = load_model(argv[i], Model_format::OBJ);
-        renderer.add_static_vertices(obj->verts(),
-                                     obj->vert_size(),
-                                     obj->elements(),
-                                     obj->element_size(),
-                                     [&model_shader]() {
-                                        model_shader->use();
-                                     });
+        renderer.add_static_vertices(
+            obj->verts(), obj->vert_size(), obj->elements(),
+            obj->element_size(),
+            [&model_shader]() { model_shader->use(); });
     }
 
     Camera camera1(&renderer, true);
@@ -56,26 +56,26 @@ int main(int argc, char** argv)
          .bind('s', [&active](int event) { active->move_backward(); })
          .bind('a', [&active](int event) { active->move_left(); })
          .bind('d', [&active](int event) { active->move_right(); })
-         .bind('e', [&active, &roll, &down](int event) { 
+         .bind('e', [&active, &roll, &down](int event) {
                     if (event == SDL_KEYUP) {
                         down = false;
                     } else {
-                        roll = 0.5f; 
-                        active->roll(roll); 
+                        roll = 0.5f;
+                        active->roll(roll);
                         down = true;
                     }
           })
-         .bind('q', [&active, &roll, &down](int event) { 
+         .bind('q', [&active, &roll, &down](int event) {
                     if (event == SDL_KEYUP) {
                         down = false;
                     } else {
-                        roll = -0.5f; 
-                        active->roll(roll); 
+                        roll = -0.5f;
+                        active->roll(roll);
                         down = true;
                     }
           })
          .bind('1', [&camera1, &active](int event) { active = &camera1; });
-    
+
     // Run the actual engine
     uint64_t frame = 0;
 

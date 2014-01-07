@@ -1,4 +1,4 @@
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
 #include <iostream>
 #include <chrono>
 #include <rainbow/gl.h>
@@ -37,16 +37,6 @@ bool Display::resolution(int width, int height)
         SDL_DestroyWindow(screen);
     }
 
-    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED, 
-                              SDL_WINDOWPOS_CENTERED, 640, 480, 
-                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-
-    screen_center_x = width / 2;
-    screen_center_y = height / 2;
-
-    if (!screen)
-        return false;
-    
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -58,6 +48,18 @@ bool Display::resolution(int width, int height)
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+                        SDL_GL_CONTEXT_PROFILE_CORE);
+
+    screen = SDL_CreateWindow("rainbow", SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED, 640, 480,
+                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+    screen_center_x = width / 2;
+    screen_center_y = height / 2;
+
+    if (!screen)
+        return false;
 
     context = SDL_GL_CreateContext(screen);
 
@@ -66,7 +68,7 @@ bool Display::resolution(int width, int height)
 
     glewExperimental = GL_TRUE;
     GLenum glew_status = glewInit();
-    if (glew_status != GLEW_OK) 
+    if (glew_status != GLEW_OK)
         cerr << glewGetErrorString(glew_status) << endl;
 
     renderer->init();

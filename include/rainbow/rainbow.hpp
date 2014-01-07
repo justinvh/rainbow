@@ -10,6 +10,6 @@
 #include <rainbow/model.hpp>
 #include <rainbow/state.hpp>
 #include <rainbow/sys/system.hpp>
-#include <rainbow/utils/logging.hpp>
+#include <rainbow/utils/logger.hpp>
 
 #endif // RAINBOW_RAINBOW_HPP

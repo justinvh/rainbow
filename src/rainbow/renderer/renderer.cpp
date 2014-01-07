@@ -57,15 +57,14 @@ void Renderer::init()
 
     // Create a mappable extensions array for quickly querying
     const GLubyte* extensions = glGetString(GL_EXTENSIONS);
-    log_debug("Extensions : ");
     if (extensions == nullptr) {
-        cerr << "None" << endl;
+        log_debug("Extensions : None available");
     } else {
         std::stringstream iss((const char*)extensions);
         std::string extension;
         for (int i = 1; iss >> extension; i++) {
             if (i % 3 == 0)
-            log_debug(extension);
+            log_debug("Extensions : {}"_format(extension));
             info.extensions[extension] = true;
         }
     }
@@ -85,7 +84,7 @@ void Renderer::run_frame()
     glBindBuffer(GL_ARRAY_BUFFER, vbo_static);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_static);
 
-        // Final pass
+    // Final pass
     camera_frame();
     for (Static_entry entry : static_draws) {
         glDrawRangeElements(GL_TRIANGLES,

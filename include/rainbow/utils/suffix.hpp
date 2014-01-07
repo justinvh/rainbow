@@ -9,17 +9,17 @@
 
 namespace std {
 
-std::string to_string(const char* value)
+inline std::string to_string(const char* value)
 {
     return std::string(value);
 }
 
-std::string to_string(const unsigned char* value)
+inline std::string to_string(const unsigned char* value)
 {
     return to_string(reinterpret_cast<const char*>(value));
 }
 
-std::string to_string(std::string value)
+inline std::string to_string(std::string value)
 {
     return value;
 }

@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <rainbow/display.hpp>
 #include <rainbow/input.hpp>
+#include <rainbow/utils/logger.hpp>
 
 using namespace rb;
 

@@ -52,6 +52,7 @@ public:
 typedef std::ostream_iterator<char> DefaultLogWriter;
 typedef Logger<DefaultLogWriter> DefaultLogger;
 
+inline
 Logger<DefaultLogWriter>& get_logger(LogLevel level)
 {
     static DefaultLogWriter writer_cerr(std::cerr, "");
