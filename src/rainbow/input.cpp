@@ -1,6 +1,5 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_input.h>
 #include <rainbow/display.hpp>
 #include <rainbow/input.hpp>
 

@@ -5,6 +5,7 @@
 #include <rainbow/model/obj.hpp>
 #include <rainbow/file.hpp>
 #include <rainbow/math/random.hpp>
+#include <rainbow/utils/logger.hpp>
 
 using namespace rb;
 using namespace std;
@@ -30,7 +31,7 @@ bool handle_vertex(Model_obj* instance, stringstream& iss)
     v[p + 3] = random_scale();
     v[p + 4] = random_scale();
     v[p + 5] = random_scale();
-    
+
     instance->vert_position += 6 + 3 + 2;
     return false;
 }
@@ -91,7 +92,7 @@ bool Model_obj::load_model(const std::string& filename)
 
     // Do a quick pass to count number of vertices and elements
     int faces = 0, vertices = 0;
-    cout << "Pass 0: Allocation" << endl;
+    log_debug("Pass 0: Allocation");
     while((getline(obj, line, '\n').rdstate() & ifstream::eofbit) == 0) {
         string token;
         stringstream iss(line);
@@ -120,24 +121,21 @@ bool Model_obj::load_model(const std::string& filename)
     memset(data_elements.get(), 0, data_element_size);
 
     // Allocate
-    cout << "data_vert_count: " << data_vert_count << "\n"
-         << "data_vert_size: " << data_vert_size << "\n"
-         << "data_elements_count: " << data_element_count << "\n"
-         << "data_elements_size: " << data_element_size << "\n"
-         << "vertices: " << vertices << "\n"
-         << "faces: " << faces << endl;
+    log_debug("data_vert_count: {}"_format(data_vert_count));
+    log_debug("data_vert_size:  {}"_format(data_vert_size));
+    log_debug("data_elements_count: {}"_format(data_element_count));
+    log_debug("data_elements_size: "_format(data_element_size));
+    log_debug("vertices: {}"_format(vertices));
+    log_debug("faces: "_format(faces));
 
-
-
-
-    // Reset 
+    // Reset
     obj.clear();
     obj.seekg(0, ios::beg);
 
     // Pass 1: Vertices and faces
     vert_position = 0;
     element_position = 0;
-    cout << "Pass 1: Vertices and faces" << endl;
+    log_debug("Pass 1: Vertices and faces");
     while((getline(obj, line, '\n').rdstate() & ifstream::eofbit) == 0) {
         string token;
         stringstream iss(line);
@@ -159,13 +157,13 @@ bool Model_obj::load_model(const std::string& filename)
         }
     }
 
-    // Reset 
+    // Reset
     obj.clear();
     obj.seekg(0, ios::beg);
 
     // Pass 2 vn
     vert_position = 0;
-    cout << "Pass 2: Normals" << endl;
+    log_debug("Pass 2: Normals");
     while((getline(obj, line, '\n').rdstate() & ifstream::eofbit) == 0) {
         string token;
         stringstream iss(line);
@@ -179,13 +177,13 @@ bool Model_obj::load_model(const std::string& filename)
         }
     }
 
-    // Reset 
+    // Reset
     obj.clear();
     obj.seekg(0, ios::beg);
 
     // Pass 3 vt
     vert_position = 0;
-    cout << "Pass 3: Texture Units" << endl;
+    log_debug("Pass 3: Texture Units");
     while((getline(obj, line, '\n').rdstate() & ifstream::eofbit) == 0) {
         string token;
         stringstream iss(line);

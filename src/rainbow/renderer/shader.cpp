@@ -7,8 +7,8 @@ using rb::Attribute;
 using rb::Uniform;
 
 Shader::Shader(const std::string& name,
-               const std::string& vertex_file, 
-               const std::string& fragment_file, 
+               const std::string& vertex_file,
+               const std::string& fragment_file,
                bool raise_exception)
 {
     initialize(name);
@@ -37,7 +37,7 @@ Shader::Shader(const std::string& name,
 }
 
 Shader::Shader(const std::string& name,
-               const std::string& file, 
+               const std::string& file,
                Shader_type shader_type,
                bool raise_exception)
 {
@@ -142,7 +142,7 @@ bool Shader::attach(Shader_type which)
 
 bool Shader::bind(const std::string& what, Shader_type where)
 {
-    if (!program_initialized()) 
+    if (!program_initialized())
         return false;
 
     if (where == Shader_type::FRAGMENT) {
@@ -160,7 +160,7 @@ bool Shader::bind(const std::string& what, Shader_type where)
 
 bool Shader::use()
 {
-    if (!program_initialized()) 
+    if (!program_initialized())
         return false;
     glUseProgram(glprogram);
     return true;
@@ -179,7 +179,7 @@ bool Shader::program_initialized()
 
 bool Shader::link()
 {
-    if (!program_initialized()) 
+    if (!program_initialized())
         return false;
     glLinkProgram(glprogram);
     return true;
@@ -221,12 +221,12 @@ void Attribute::eso(int elements, int stride, int offset, int size_of,
                     bool normalize)
 {
     glEnableVertexAttribArray(attribute);
-    glVertexAttribPointer(attribute, 
-                          elements, 
-                          GL_FLOAT, 
+    glVertexAttribPointer(attribute,
+                          elements,
+                          GL_FLOAT,
                           normalize ? GL_TRUE : GL_FALSE,
                           stride * size_of,
-                          (void*)(offset * size_of));
+                          reinterpret_cast<const GLvoid*>(offset * size_of));
 }
 
 void Attribute::vec2(int stride, int offset, int size_of, bool normalize)

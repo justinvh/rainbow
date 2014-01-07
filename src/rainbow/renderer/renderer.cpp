@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cstdint>
 
+#include <rainbow/utils/logger.hpp>
 #include <rainbow/display.hpp>
 #include <rainbow/renderer.hpp>
 
@@ -47,28 +48,26 @@ void Renderer::init()
     info.vendor = (const char*)glGetString(GL_VENDOR);
     info.version = (const char*)glGetString(GL_VERSION);
     info.glsl = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-    
-    cout << "Driver     : " << info.driver_name << "\n"
-         << "Renderer   : " << info.renderer << "\n"
-         << "Vendor     : " << info.vendor << "\n"
-         << "Version    : " << info.version << "\n"
-         << "GLSL       : " << info.glsl << "\n";
+
+    log_debug("Driver     : {}"_format(info.driver_name));
+    log_debug("Renderer   : {}"_format(info.renderer));
+    log_debug("Vendor     : {}"_format(info.vendor));
+    log_debug("Version    : {}"_format(info.version));
+    log_debug("GLSL       : {}"_format(info.glsl));
 
     // Create a mappable extensions array for quickly querying
     const GLubyte* extensions = glGetString(GL_EXTENSIONS);
-    cout << "Extensions : ";
+    log_debug("Extensions : ");
     if (extensions == nullptr) {
         cerr << "None" << endl;
     } else {
         std::stringstream iss((const char*)extensions);
         std::string extension;
         for (int i = 1; iss >> extension; i++) {
-            if (i % 3 == 0)  
-                cout << "\n             ";
-            cout  << extension << " ";
+            if (i % 3 == 0)
+            log_debug(extension);
             info.extensions[extension] = true;
         }
-        cout << "\n";
     }
 }
 
@@ -89,33 +88,33 @@ void Renderer::run_frame()
         // Final pass
     camera_frame();
     for (Static_entry entry : static_draws) {
-        glDrawRangeElements(GL_TRIANGLES, 
+        glDrawRangeElements(GL_TRIANGLES,
                             entry.begin,
                             entry.end,
                             entry.count,
-                            GL_UNSIGNED_INT, 
+                            GL_UNSIGNED_INT,
                             (const GLuint*)0 + entry.offset);
     }
 
     // Static pass
     for (Static_entry entry : static_draws) {
         entry.setup();
-        glDrawRangeElements(GL_TRIANGLES, 
+        glDrawRangeElements(GL_TRIANGLES,
                             entry.begin,
                             entry.end,
                             entry.count,
-                            GL_UNSIGNED_INT, 
+                            GL_UNSIGNED_INT,
                             (const GLuint*)0 + entry.offset);
     }
 }
 
-GLuint Renderer::add_static_vertices(const float* vertices, 
+GLuint Renderer::add_static_vertices(const float* vertices,
                                      uint32_t vlength,
                                      const int* elements,
                                      uint32_t elength,
                                      std::function<void(void)> setup)
 {
-    
+
     glBindVertexArray(vao_static);
 
     // Reallocate the vertices
@@ -128,9 +127,9 @@ GLuint Renderer::add_static_vertices(const float* vertices,
 
     // Bind the new buffer
     glBindBuffer(GL_ARRAY_BUFFER, vbo_static);
-    glBufferData(GL_ARRAY_BUFFER, realloc_vsize, 
+    glBufferData(GL_ARRAY_BUFFER, realloc_vsize,
         vertices_static, GL_STATIC_DRAW);
-    
+
     // Reallocate the elements
     int realloc_esize = elements_static_size + elength;
     int* s = (int*)malloc(realloc_esize);
@@ -142,26 +141,28 @@ GLuint Renderer::add_static_vertices(const float* vertices,
     // adjust the elements data
     for (int i = 0; i < elength / sizeof(int); i++)  {
         size_t offset = elements_static_size / sizeof(int);
-        elements_static[i + offset] += (vertices_static_size / sizeof(int) / 7);
+        elements_static[i + offset] += vertices_static_size / sizeof(int) / 7;
     }
 
     // adjust the elements data
-    for (int i = 0; i < realloc_esize / sizeof(int); i++) 
+    /*
+    for (int i = 0; i < realloc_esize / sizeof(int); i++)
         std::cout << elements_static[i] << " ";
+    */
 
     // Update the elements array
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_static);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, realloc_esize, 
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, realloc_esize,
         elements_static, GL_STATIC_DRAW);
 
     // Create a new static entry draw routine
     size_t element_offset = elements_static_size / sizeof(GLuint);
     size_t element_count = (realloc_esize-elements_static_size)/sizeof(GLuint);
-    Static_entry entry = {elements_static_size,  // begin
-                          realloc_esize,         // end
-                          element_count,         // count
-                          element_offset,        // offset
-                          setup};                // setup
+    Static_entry entry = {elements_static_size,                 // begin
+                          static_cast<size_t>(realloc_esize),   // end
+                          element_count,                        // count
+                          element_offset,                       // offset
+                          setup};                               // setup
 
     // Add to draw list
     static_draws.push_back(entry);
@@ -191,13 +192,13 @@ GLuint Renderer::add_stream_vertices(float* vertices, uint32_t length)
 }
 
 int Renderer::add_shader(const std::string& name,
-                         const std::string& vertex, 
+                         const std::string& vertex,
                          const std::string& fragment,
                          bool raise_exception)
 {
     static int shader_count = 0;
     shader_count++;
-    std::unique_ptr<Shader> shader(new Shader(name, vertex, 
+    std::unique_ptr<Shader> shader(new Shader(name, vertex,
                                               fragment, raise_exception));
     shaders[shader_count] = std::move(shader);
     return shader_count;
@@ -209,7 +210,7 @@ int Renderer::add_fragment_shader(const std::string& name,
 {
     static int shader_count = 1000;
     shader_count++;
-    std::unique_ptr<Shader> shader(new Shader(name, fragment, 
+    std::unique_ptr<Shader> shader(new Shader(name, fragment,
                 Shader_type::FRAGMENT, raise_exception));
     shaders[shader_count] = std::move(shader);
     return shader_count;
@@ -221,7 +222,7 @@ int Renderer::add_vertex_shader(const std::string& name,
 {
     static int shader_count = 500;
     shader_count++;
-    std::unique_ptr<Shader> shader(new Shader(name, vertex, 
+    std::unique_ptr<Shader> shader(new Shader(name, vertex,
                 Shader_type::VERTEX, raise_exception));
     shaders[shader_count] = std::move(shader);
     return shader_count;
@@ -273,7 +274,7 @@ void Renderer_tests::color_square()
         0, 1, 2,
         1, 3, 0
     };
-    
-    renderer->add_static_vertices(vertices, sizeof(vertices), 
+
+    renderer->add_static_vertices(vertices, sizeof(vertices),
                                   elements, sizeof(elements));
 }

@@ -8,7 +8,8 @@
 #include <rainbow/input.hpp>
 #include <rainbow/map.hpp>
 #include <rainbow/model.hpp>
-#include <rainbow/scripting.hpp>
 #include <rainbow/state.hpp>
+#include <rainbow/sys/system.hpp>
+#include <rainbow/utils/logging.hpp>
 
 #endif // RAINBOW_RAINBOW_HPP

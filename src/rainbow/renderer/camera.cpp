@@ -67,11 +67,13 @@ void Camera::look(float phi, float theta)
     state.view.mat4(view);
     state.proj.mat4(projection);
 
+    /*
     std::cout << "state.phi:   " << state.phi << " "
               << "state.theta: " << state.theta << " "
-              << "x y z: " << p.x << " " 
+              << "x y z: " << p.x << " "
               << p.y << " " << p.z << " "
               << "roll: " << state.roll << std::endl;
+    */
 }
 
 void Camera::fov(float degrees)
@@ -86,7 +88,7 @@ void Camera::aspect_ratio(float ratio)
 
 void Camera::update_perspective()
 {
-    projection = glm::perspective(state.fov, 
+    projection = glm::perspective(state.fov,
         state.aspect_ratio, 0.1f, 1000.0f);
 }
 
