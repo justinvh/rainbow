@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_DISPLAY_FONT_HPP
 #define RAINBOW_DISPLAY_FONT_HPP
 
@@ -27,7 +28,7 @@ typedef std::map<uint32_t, Char_glyph_map> Size_glyph_map;
 
 struct FT {
     FT() = default;
-    ~FT() 
+    ~FT()
     {
         if (library) {
             FT_Done_FreeType(library);

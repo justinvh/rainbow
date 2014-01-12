@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_MAP_HPP
 #define RAINBOW_MAP_HPP
 

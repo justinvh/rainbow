@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_RENDERER_CAMERA_HPP
 #define RAINBOW_RENDERER_CAMERA_HPP
 

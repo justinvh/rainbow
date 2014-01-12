@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_INPUT_HPP
 #define RAINBOW_INPUT_HPP
 

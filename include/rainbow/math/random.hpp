@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_MATH_RANDOM_HPP
 #define RAINBOW_MATH_RANDOM_HPP
 

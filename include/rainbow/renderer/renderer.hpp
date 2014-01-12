@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_RENDERER_RENDERER_HPP
 #define RAINBOW_RENDERER_RENDERER_HPP
 
@@ -20,7 +21,7 @@ typedef std::map<std::string, bool> GL_extensions;
 struct GL_info {
     std::string driver_name;
     std::string renderer;
-    std::string vendor; 
+    std::string vendor;
     std::string version;
     std::string glsl;
     GL_extensions extensions;
@@ -56,7 +57,7 @@ public:
     Shader* get_or_create_vertex_shader(const std::string& name);
     void camera_frame();
     int add_shader(const std::string& name,
-                   const std::string& vertex, 
+                   const std::string& vertex,
                    const std::string& fragment,
                    bool raise_exception);
     int add_fragment_shader(const std::string& name,

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_MAP_BSP_HPP
 #define RAINBOW_MAP_BSP_HPP
 

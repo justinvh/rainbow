@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_MODEL_MODEL_HPP
 #define RAINBOW_MODEL_MODEL_HPP
 
@@ -26,7 +27,7 @@ public:
 };
 
 typedef std::unique_ptr<Model> Model_unique;
-Model_unique load_model(const std::string& filename, 
+Model_unique load_model(const std::string& filename,
                         Model_format fmt = Model_format::UNKNOWN);
 
 Model_format guess_model_format(const std::string& filename);

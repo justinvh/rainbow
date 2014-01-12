@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_STATE_HPP
 #define RAINBOW_STATE_HPP
 

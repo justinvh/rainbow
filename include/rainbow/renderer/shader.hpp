@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_RENDERER_SHADER_HPP
 #define RAINBOW_RENDERER_SHADER_HPP
 
@@ -16,8 +17,8 @@ enum class Shader_type {
 
 class bad_shader : public std::exception {
 public:
-    bad_shader(const std::string& file, 
-               const std::string& error, 
+    bad_shader(const std::string& file,
+               const std::string& error,
                Shader_type shader_type)
         : type(shader_type), file(file), error(error) {
             std::stringstream full_msg;
@@ -41,13 +42,13 @@ class Attribute {
 public:
     Attribute() = default;
     Attribute(GLuint glprogram, const std::string& name);
-    void eso(int elements, int stride, int offset, 
+    void eso(int elements, int stride, int offset,
              int size_of = sizeof(float), bool normalize = false);
-    void vec2(int stride, int offset, 
+    void vec2(int stride, int offset,
              int size_of = sizeof(float), bool normalize = false);
-    void vec3(int stride, int offset, 
+    void vec3(int stride, int offset,
              int size_of = sizeof(float), bool normalize = false);
-    void vec4(int stride, int offset, 
+    void vec4(int stride, int offset,
              int size_of = sizeof(float), bool normalize = false);
 public:
     std::string name;
@@ -81,7 +82,7 @@ public:
     ~Shader();
     bool cleanup();
     bool initialize(const std::string& name);
-    bool compile(const std::string& shader_file, 
+    bool compile(const std::string& shader_file,
                  Shader_type shader_type = Shader_type::NOT_PROVIDED);
     bool attach(Shader_type which = Shader_type::NOT_PROVIDED);
     bool link();

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_DISPLAY_HPP
 #define RAINBOW_DISPLAY_HPP
 

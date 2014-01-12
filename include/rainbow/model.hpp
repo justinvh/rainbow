@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_MODEL_HPP
 #define RAINBOW_MODEL_HPP
 

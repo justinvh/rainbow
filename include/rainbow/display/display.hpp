@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RAINBOW_DISPLAY_DISPLAY_HPP
 #define RAINBOW_DISPLAY_DISPLAY_HPP
 
@@ -10,7 +11,7 @@ typedef std::chrono::high_resolution_clock Timer;
 typedef std::chrono::duration_cast<std::chrono::seconds> Timer_diff;
 */
 
-#define Time_point std::chrono::time_point<std::chrono::high_resolution_clock> 
+#define Time_point std::chrono::time_point<std::chrono::high_resolution_clock>
 #define Timer std::chrono::high_resolution_clock
 #define Timer_diff std::chrono::duration_cast<std::chrono::milliseconds>
 
